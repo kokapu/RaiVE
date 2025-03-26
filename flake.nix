@@ -19,8 +19,15 @@
           nativeBuildInputs = with pkgs; [
             (pkgs.python312.withPackages (
               python-pkgs: with python-pkgs; [
-                numpy
-                matplotlib
+                flask
+                flask-cors
+                python-dotenv
+                requests
+                flask-session
+                huggingface-hub
+                bcrypt
+                flake8
+                sphinx
               ])
             )
             just
