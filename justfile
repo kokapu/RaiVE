@@ -9,3 +9,6 @@ default:
 
 run:
     flask run
+
+lint:
+    flake8 .
