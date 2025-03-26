@@ -7,8 +7,10 @@ set quiet
 default:
     just --list
 
+[doc('Run the application')]
 run:
     flask run
 
+[doc('Linting')]
 lint:
     flake8 .
