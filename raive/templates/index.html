@@ -1,17 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>rAIve</title>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
-  </head>
-  <body>
-    <main>
-        <h1>Let's get rAIving</h1>  
-    </main>
-    <!-- <script src="index.js"></script> -->
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>rAIve</title>
+  <!-- Link to external CSS file -->
+  <link rel="stylesheet" href="./style.css">
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header>
+    <div class="header-left">
+      <a href="https://github.com/bhavyakasera1/rAIve">
+        <img class="logo" src="{{ url_for('static', filename='images/rAIveLogo.webp') }}" alt="rAIve Logo">
+      </a>
+    </div>
+    <div class="header-right">
+      <!-- Example volume control; you can hook it up to your audio player later -->
+      <label for="volumeControl">Volume</label>
+      <input type="range" id="volumeControl" min="0" max="100" value="50">
+      <!-- TODO: add past project links -->
+      <!-- <nav> -->
+      <!--   <ul> -->
+      <!--     <li><a href="#">Project Link 1</a></li> -->
+      <!--     <li><a href="#">Project Link 2</a></li> -->
+      <!--   </ul> -->
+      <!-- </nav> -->
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Music Visualizer -->
+    <div class="music-visualizer">
+      <!-- This can be replaced with any visualization library or code -->
+      <canvas id="visualizer"></canvas>
+    </div>
+
+    <!-- Chat History -->
+    <div class="chat-history" id="output">
+      <!-- Messages from the API will appear here -->
+    </div>
+
+    <!-- Prompt / Input Area -->
+    <form class="input-prompt" onsubmit="handleInput(); return false;">
+      <input type="text" id="input" placeholder="Enter your text here">
+      <button type="submit" id="submit">Submit</button>
+    </form>
+  </main>
+
+  <!-- JavaScript to handle input -->
+  <script>
+    async function handleInput() {
+      const inputField = document.getElementById('input');
+      const userText = inputField.value.trim();
+      if (!userText) return; // avoid empty requests
+
+      // Send to your Python API
+      const response = await fetch('/api/engine', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prompt: userText })
+      });
+      const data = await response.json();
+
+      // Display the API response in the chat history
+      const outputElement = document.getElementById('output');
+      const newMessage = document.createElement('p');
+      newMessage.textContent = data.response;
+      outputElement.appendChild(newMessage);
+
+      // Clear the input field
+      inputField.value = '';
+    }
+  </script>
+</body>
 </html>
+

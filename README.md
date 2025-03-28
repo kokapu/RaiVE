@@ -3,11 +3,13 @@
 ## Setting up
 ### Dependencies
 #### Nix
-If using nix the only external dependency is `Docker`, for `nix` to work with
-the `justfile` create a `.env` file in the root of the project and set the 
-`USE_NIX` environment variable.
+If running with Nix, the only dependency is Nix itself. Start by installing Nix:
 ```sh
-echo "USE_NIX=true" >> .env
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+Then set up the environment to use Nix:
+```sh
+nix develop
 ```
 
 #### Other
