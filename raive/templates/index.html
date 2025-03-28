@@ -12,6 +12,27 @@
     <main>
         <h1>Let's get rAIving</h1>  
     </main>
-    <!-- <script src="index.js"></script> -->
+    <!-- add a text box and a button that will send the content of the text box to a python api-->
+    <div class="container">
+      <input type="text" id="input" placeholder="Enter your text here">
+      <button id="submit" onclick="handleInput()">Submit</button>
+    </div>
+    <div class="container">
+      <p id="output"></p>
+    </div>
+<script>
+  async function handleInput() {
+    const input = document.getElementById('input').value;
+      const response = await fetch('/api/engine', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({prompt: input})
+      });
+      const data = await response.json();
+        document.getElementById('output').innerText = data.response;
+    }
+</script>
   </body>
 </html>
