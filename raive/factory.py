@@ -36,7 +36,7 @@ def create_app():
 
     # Routes for API
     @app.route("/api/engine", methods=["POST"])
-    def ping_pong():
+    def update_sound():
         prompt = request.json["prompt"]
         sound_engine.update(prompt)
         response = sound_engine.get_response()
