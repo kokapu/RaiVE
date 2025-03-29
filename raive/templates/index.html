@@ -34,16 +34,14 @@
 
   <!-- Main Content -->
   <main>
-    <!-- Music Visualizer -->
-    <div class="music-visualizer">
-      <!-- This can be replaced with any visualization library or code -->
-      <canvas id="visualizer"></canvas>
-    </div>
-
-    <!-- Chat History -->
-    <div class="chat-history" id="output">
-      <!-- Messages from the API will appear here -->
-    </div>
+    <script src="https://unpkg.com/@strudel/repl@latest"></script>
+    <strudel-editor id="repl">
+      <!-- ... -->
+    </strudel-editor>
+      <script>
+      const repl = document.getElementById('repl');
+      console.log(repl.editor);
+    </script>
 
     <!-- Prompt / Input Area -->
     <form class="input-prompt" onsubmit="handleInput(); return false;">
@@ -59,21 +57,20 @@
       const userText = inputField.value.trim();
       if (!userText) return; // avoid empty requests
 
-      // Send to your Python API
+      // Send the user's prompt to your Python API
       const response = await fetch('/api/engine', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: userText })
       });
       const data = await response.json();
 
-      // Display the API response in the chat history
-      const outputElement = document.getElementById('output');
-      const newMessage = document.createElement('p');
-      newMessage.textContent = data.response;
-      outputElement.appendChild(newMessage);
+      // Get the Strudel editor element and its underlying editor instance
+      const repl = document.getElementById('repl');
+      
+      // Move the API response code into the editor and play it
+      repl.editor.setCode(userText);
+      repl.editor.evaluate();
 
       // Clear the input field
       inputField.value = '';
