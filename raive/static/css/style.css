@@ -98,3 +98,17 @@ main {
   padding: 0.5rem 1rem;
   cursor: pointer;
 }
+
+.editor-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.cm-editor {
+  width: 600px;
+  height: 500px;
+  padding: 1rem;
+}
+

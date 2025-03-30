@@ -1,48 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>rAIve</title>
-  <!-- Link to external CSS file -->
   <link rel="stylesheet" href="./style.css">
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- TODO: this works with flask only -->
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+  <link rel="stylesheet" href="static/css/style.css">
 </head>
-<body>
 
+<body>
   <!-- Header Section -->
   <header>
     <div class="header-left">
       <a href="https://github.com/bhavyakasera1/rAIve">
-        <img class="logo" src="{{ url_for('static', filename='images/rAIveLogo.webp') }}" alt="rAIve Logo">
+        <!-- TODO: this works with flask only -->
+        <!-- <img class="logo" src="{{ url_for('static', filename='images/rAIveLogo.webp') }}" alt="rAIve Logo"> -->
+        <img class="logo" src="static/images/rAIveLogo.webp" alt="rAIve Logo">
       </a>
     </div>
     <div class="header-right">
-      <!-- Example volume control; you can hook it up to your audio player later -->
+      <!-- Volume control -->
       <label for="volumeControl">Volume</label>
       <input type="range" id="volumeControl" min="0" max="100" value="50">
-      <!-- TODO: add past project links -->
-      <!-- <nav> -->
-      <!--   <ul> -->
-      <!--     <li><a href="#">Project Link 1</a></li> -->
-      <!--     <li><a href="#">Project Link 2</a></li> -->
-      <!--   </ul> -->
-      <!-- </nav> -->
+      <!-- Play/Pause buttons -->
+      <button id="playButton">Play</button>
+      <button id="pauseButton">Pause</button>
+      <!-- Future project links can go here -->
     </div>
   </header>
 
   <!-- Main Content -->
   <main>
-    <script src="https://unpkg.com/@strudel/repl@latest"></script>
-    <strudel-editor id="repl">
-      <!-- ... -->
-    </strudel-editor>
-      <script>
-      const repl = document.getElementById('repl');
-      console.log(repl.editor);
-    </script>
-
+    <script src="static/strudel/index.js"></script>
+    <div class="editor-container">
+      <strudel-editor id="repl">
+        <!-- ... -->
+      </strudel-editor>
+    </div>
     <!-- Prompt / Input Area -->
     <form class="input-prompt" onsubmit="handleInput(); return false;">
       <input type="text" id="input" placeholder="Enter your text here">
@@ -50,24 +48,28 @@
     </form>
   </main>
 
-  <!-- JavaScript to handle input -->
+  <!-- JavaScript to handle input, volume, and playback -->
   <script>
     async function handleInput() {
       const inputField = document.getElementById('input');
+      const repl = document.getElementById('repl');
+      const currentText = repl.editor.getCode();
       const userText = inputField.value.trim();
       if (!userText) return; // avoid empty requests
+
+      console.log('User input:', userText);
+      console.log('Current text:', currentText);
 
       // Send the user's prompt to your Python API
       const response = await fetch('/api/engine', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: userText })
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({prompt: userText, currentText: currentText})
       });
       const data = await response.json();
 
       // Get the Strudel editor element and its underlying editor instance
-      const repl = document.getElementById('repl');
-      
+
       // Move the API response code into the editor and play it
       repl.editor.setCode(userText);
       repl.editor.evaluate();
@@ -75,7 +77,36 @@
       // Clear the input field
       inputField.value = '';
     }
+
+    // Hook up the volume control
+    const volumeControl = document.getElementById('volumeControl');
+    volumeControl.addEventListener('input', (e) => {
+      const volume = e.target.value / 100; // Convert 0���100 to 0.0–1.0
+      console.log('Volume set to:', volume);
+      // TODO: Hook this up to your audio element or gain node, e.g.:
+      // gainNode.gain.value = volume;
+    });
+
+    // Add play and pause button functionality
+    const playButton = document.getElementById('playButton');
+    const pauseButton = document.getElementById('pauseButton');
+
+    playButton.addEventListener('click', () => {
+      const repl = document.getElementById('repl');
+      if (repl && repl.editor) {
+        // Call evaluate() to start or resume execution/playback
+        repl.editor.evaluate();
+      }
+    });
+
+    pauseButton.addEventListener('click', () => {
+      const repl = document.getElementById('repl');
+      if (repl && repl.editor) {
+        // Call stop() to pause/stop the execution/playback
+        repl.editor.stop();
+      }
+    });
   </script>
 </body>
-</html>
 
+</html>
