@@ -28,6 +28,7 @@
                 bcrypt
                 flake8
                 sphinx
+                google-generativeai
               ])
             )
             just

@@ -67,6 +67,8 @@
         body: JSON.stringify({prompt: userText, currentText: currentText})
       });
       const data = await response.json();
+      const code = data.response.code;
+      console.log('Model response:', code);
 
       // Get the Strudel editor element and its underlying editor instance
 
