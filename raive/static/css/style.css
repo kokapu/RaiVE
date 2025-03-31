@@ -71,17 +71,6 @@ main {
   align-items: center;
 }
 
-/* Music visualizer placeholder */
-.music-visualizer {
-  width: 100%;
-  height: 200px;
-  background-color: #eee;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Chat history */
 .chat-history {
   width: 100%;
@@ -108,5 +97,18 @@ main {
 .input-prompt button {
   padding: 0.5rem 1rem;
   cursor: pointer;
+}
+
+.editor-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.cm-editor {
+  width: 600px;
+  height: 500px;
+  padding: 1rem;
 }
 
