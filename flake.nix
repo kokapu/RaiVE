@@ -28,9 +28,13 @@
                 bcrypt
                 flake8
                 sphinx
+                google-generativeai
               ])
             )
             just
+            nodejs
+            nodePackages.live-server
+            nodePackages.vscode-langservers-extracted
           ];
         };
       }
