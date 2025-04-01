@@ -1,5 +1,5 @@
-
 import google.generativeai as genai
+
 
 class GeminiPro25:
     def __init__(self, coding_env="TidalCycles", language="JavaScript"):
@@ -28,4 +28,3 @@ class GeminiPro25:
         code = response.text
         self.existing_code += code
         return code
-

@@ -5,7 +5,6 @@ from flask import Flask, render_template, request
 from flask.json import jsonify
 from flask_cors import CORS
 
-from raive.engine import SoundEngine
 from raive.model import GeminiPro25 as Model
 
 
@@ -21,14 +20,13 @@ def create_app():
     TEMPLATE_FOLDER = os.path.join(APP_DIR, "templates")
     logging.basicConfig(level=logging.DEBUG)
 
-    sound_engine = SoundEngine()
     app = Flask(
         __name__,
         static_folder=STATIC_FOLDER,
         template_folder=TEMPLATE_FOLDER,
     )
     CORS(app)
-    model = Model() 
+    model = Model()
 
     # Routes for HTML pages
     @app.route("/", defaults={"path": ""})
