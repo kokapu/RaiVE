@@ -35,6 +35,7 @@
             nodejs
             nodePackages.live-server
             nodePackages.vscode-langservers-extracted
+            git
           ];
         };
       }

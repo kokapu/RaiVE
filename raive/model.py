@@ -10,21 +10,27 @@ class GeminiPro25:
         self.language = language
 
         genai.configure(api_key=self.google_api_key)
-        self.model = genai.GenerativeModel("gemini-2.5-pro-exp-03-25")
+        self.session = genai.ChatSession(genai.GenerativeModel("gemini-2.5-pro-exp-03-25"))
 
     def update_prompt(self, user_prompt):
         if not self.prompt:
-            self.prompt = f"Generate live coding code in {self.coding_env} in {self.language} for the following user prompt. Return just the code and nothing else.:\n\n"
+            with open("raive/static/prompts/initial.txt", "r") as file:
+                self.prompt = file.read()
             self.prompt += user_prompt
         else:
-            self.prompt = f"The live coding code in {self.coding_env} we have so far is as follows:\n\n"
-            self.prompt += self.existing_code + "\n\n"
-            self.prompt += "Update the code to include the following. Return just the new code to add and nothing else.:\n\n"
-            self.prompt += user_prompt
+            with open("raive/static/prompts/followup.txt", "r") as file:
+                self.prompt = file.read()
+            self.prompt += "Code: " + self.existing_code + "\n\n"
+            self.prompt += "Prompt: " + user_prompt + "\n\n"
 
     def get_code(self, user_prompt):
         self.update_prompt(user_prompt)
-        response = self.model.generate_content(self.prompt)
+        try:
+            response = self.session.send_message(self.prompt)
+        except Exception as e:
+            print(f"Error generating content: {e}")
+            return ""
         code = response.text
-        self.existing_code += code
+        code = code.strip("```").strip("javascript")
+        self.existing_code = code
         return code
