@@ -10,6 +10,7 @@
   <!-- TODO: this works with flask only -->
   <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
   <link rel="stylesheet" href="static/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.min.js"></script>
 </head>
 
 <body>
@@ -35,6 +36,7 @@
 
   <!-- Main Content -->
   <main>
+    <div id="vis-container" style="width: 800px; height: 100px;"></div>
     <script src="static/strudel/index.js"></script>
     <div class="editor-container">
       <strudel-editor id="repl">
@@ -44,13 +46,17 @@
     <!-- Prompt / Input Area -->
     <form class="input-prompt" onsubmit="handleInput(); return false;">
       <input type="text" id="input" placeholder="Enter your text here">
-      <button type="submit" id="submit">Submit</button>
     </form>
   </main>
 
   <!-- JavaScript to handle input, volume, and playback -->
   <script>
     async function handleInput() {
+      const input = document.querySelector('.input-prompt input');
+      if (input.value.trim() !== '') {
+        input.classList.add('text-entered');
+      }
+
       const inputField = document.getElementById('input');
       const repl = document.getElementById('repl');
       const currentText = repl.editor.getCode();
@@ -70,14 +76,23 @@
       const code = data.response.code;
       console.log('Model response:', code);
 
-      // Get the Strudel editor element and its underlying editor instance
-
       // Move the API response code into the editor and play it
       repl.editor.setCode(code);
       repl.editor.evaluate();
 
       // Clear the input field
       inputField.value = '';
+
+      // Save the original draw method
+      const originalOnDraw = repl.editor.onDraw.bind(repl.editor);
+
+      // Wrap it
+      repl.editor.onDraw = (haps, time, painters) => {
+        originalOnDraw(haps, time, painters); // keep original behavior
+
+        const active = haps.filter(h => h.isActive(time));
+        updateWave(active);
+      };
     }
 
     // Hook up the volume control
@@ -108,6 +123,131 @@
         repl.editor.stop();
       }
     });
+
+    let numPoints = 200;
+    let waveY = [];
+    let droplets = [];
+
+    let waveSettings = {
+      gain: 0.5,
+      cutoff: 500,
+      note: 'c4',
+      room: 0.3,
+      clip: 0.2,
+      s: 'sine',
+    };
+
+    let targetHue = 300;
+    let currentHue = 300;
+
+    function setup() {
+      canvas = createCanvas(800, 100);
+      canvas.parent('vis-container');
+      noStroke();
+      colorMode(HSL, 360, 100, 100, 1);
+
+      for (let i = 0; i < numPoints; i++) {
+        waveY[i] = height / 2;
+      }
+    }
+
+    function draw() {
+    clear();
+
+    // Smooth hue transition
+    let target = noteToHue(waveSettings.note);
+    currentHue = lerp(currentHue, target, 0.05);
+    fill(currentHue, 80, 60, 0.5);
+
+    let baseAmp = waveSettings.gain * 80;
+    let frequency = map(waveSettings.cutoff || 500, 200, 2000, 0.2, 2);
+    let softness = map(waveSettings.room || 0, 0, 1, 2, 10);
+    let sharpness = map(waveSettings.clip || 0, 0, 1, 1, 5);
+
+    beginShape();
+    vertex(0, height);
+    for (let i = 0; i < numPoints; i++) {
+      let x = (i / numPoints) * width;
+      let phase = frameCount * 0.01 + i / softness;
+      let noiseOffset = noise(i * 0.05, frameCount * 0.01) * sharpness;
+      let waveFn = waveSettings.s.includes('bass') ? noise : sin;
+      let offset = waveFn(phase * frequency + noiseOffset) * baseAmp;
+      let y = height / 2 + offset;
+      vertex(x, y);
+    }
+    vertex(width, height);
+    endShape(CLOSE);
+
+    // Draw droplets
+    for (let i = droplets.length - 1; i >= 0; i--) {
+      let d = droplets[i];
+      fill(d.hue, 90, 70, d.life);
+      ellipse(d.x, d.y, d.r * 2);
+      d.life -= 0.02;
+      d.y += 0.7;
+      if (d.life <= 0) droplets.splice(i, 1);
+    }
+  }
+
+  let lastDropletTime = 0; // track last spawn time
+  let dropletCooldown = 200; // milliseconds between spawns
+
+  function updateWave(haps) {
+    if (!haps.length) return;
+
+    let now = millis();
+    let canSpawn = now - lastDropletTime > dropletCooldown;
+
+    let sum = {
+      gain: 0,
+      cutoff: 0,
+      room: 0,
+      clip: 0,
+    };
+    let notes = [];
+    let sources = [];
+
+    for (let hap of haps) {
+      sum.gain += hap.value.gain ?? 0.3;
+      sum.cutoff += hap.value.cutoff ?? 800;
+      sum.room += hap.value.room ?? 0.3;
+      sum.clip += hap.value.clip ?? 0.2;
+      if (hap.value.note) notes.push(hap.value.note);
+      if (hap.value.s) sources.push(hap.s);
+    }
+
+    let count = haps.length;
+    waveSettings = {
+      gain: sum.gain / count,
+      cutoff: sum.cutoff / count,
+      room: sum.room / count,
+      clip: sum.clip / count,
+      note: notes[Math.floor(Math.random() * notes.length)] ?? 'c4',
+      s: sources.includes('bass') ? 'bass' : 'sine',
+    };
+    targetHue = noteToHue(waveSettings.note);
+
+    // ✨ Throttled droplet spawning
+    if (canSpawn) {
+      for (let i = 0; i < min(count, 2); i++) {
+        droplets.push({
+          x: random(width),
+          y: random(height / 2 - 10, height / 2 + 10),
+          r: random(3, 6),
+          life: 1.0,
+          hue: currentHue,
+        });
+      }
+      lastDropletTime = now;
+    }
+  }
+
+  function noteToHue(note) {
+    const notes = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
+    let base = note[0]?.toLowerCase();
+    let idx = notes.indexOf(base);
+    return map(idx, 0, notes.length - 1, 200, 340); // bluish to pink
+  }
   </script>
 </body>
 

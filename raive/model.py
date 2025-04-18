@@ -32,5 +32,7 @@ class GeminiPro25:
             return ""
         code = response.text
         code = code.strip("```").strip("javascript")
+        if "tidalcycles/dirt-samples" not in code:
+            code = "samples('github:tidalcycles/dirt-samples')\n" + code
         self.existing_code = code
         return code
