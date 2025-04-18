@@ -36,12 +36,25 @@ body::before {
 /* Header styles */
 header {
   width: 100%;
-  background-color: #222;
+  background-color: rgba(51, 28, 66, 0.8);
   color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 0.5rem 0.5rem;
+  backdrop-filter: blur(6px);
+  z-index: 10;
+}
+.header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 6px #ca23ca, 0 0 12px #ca23ca;
+  pointer-events: none; /* So it doesn't block header interactions */
+  z-index: 11;
 }
 
 .header-left,
@@ -50,32 +63,25 @@ header {
   align-items: center;
 }
 
-/* Logo */
-.logo {
-  height: 40px;
-  width: auto;
-  margin-right: 1rem;
-  border-radius: 25%;
+.header-left {
+  gap: 1rem;
 }
 
-/* Volume control & links on the right side */
 .header-right {
   gap: 1rem;
 }
 
-header label {
-  margin-right: 0.5rem;
+/* Logo */
+.logo {
+  height: 50px;
+  width: auto;
+  border-radius: 15%;
+  box-shadow: 0 0 8px #ca23ca, 0 0 16px #ca23ca;
+  transition: transform 0.3s ease;
 }
 
-header nav ul {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-}
-
-header nav a {
-  color: #fff;
-  text-decoration: none;
+.logo:hover {
+  transform: rotate(3deg) scale(1.05);
 }
 
 /* Main layout */
@@ -88,9 +94,47 @@ main {
   align-items: center;
 }
 
+.vis-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
 #vis-container {
+  flex-shrink: 0;
   border: 2px solid #ca23ca;
   box-shadow: 0 0 10px #ca23ca;
+}
+
+/* Style already added previously, just refining */
+.controls-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+  background-color: rgba(64, 64, 64, 0.4);
+  border: 2px solid #ca23ca;
+  box-shadow: 0 0 8px #ca23ca, 0 0 16px #ca23ca;
+  height: 100px; /* match canvas height */
+  width: 90px;
+}
+
+.control-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  text-shadow: 0 0 5px #ca23ca, 0 0 10px #ca23ca;
+  transition: transform 0.2s ease;
+}
+
+.control-button:hover {
+  transform: scale(1.2);
 }
 
 /* Chat history */

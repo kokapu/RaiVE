@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,20 +24,20 @@
         <img class="logo" src="static/images/rAIveLogo.webp" alt="rAIve Logo">
       </a>
     </div>
+    <div class="header-title">rAIve</div>
     <div class="header-right">
-      <!-- Volume control -->
-      <label for="volumeControl">Volume</label>
-      <input type="range" id="volumeControl" min="0" max="100" value="50">
-      <!-- Play/Pause buttons -->
-      <button id="playButton">Play</button>
-      <button id="pauseButton">Pause</button>
-      <!-- Future project links can go here -->
     </div>
   </header>
 
   <!-- Main Content -->
   <main>
-    <div id="vis-container" style="width: 800px; height: 100px;"></div>
+    <div class="vis-wrapper">
+      <div id="vis-container" style="width: 700px; height: 100px;"></div>
+      <div class="controls-container">
+        <button id="playButton" class="control-button">▶</button>
+        <button id="pauseButton" class="control-button">⏸</button>
+      </div>
+    </div>
     <script src="static/strudel/index.js"></script>
     <div class="editor-container">
       <strudel-editor id="repl">
@@ -49,7 +50,7 @@
     </form>
   </main>
 
-  <!-- JavaScript to handle input, volume, and playback -->
+  <!-- JavaScript to handle input and playback -->
   <script>
     async function handleInput() {
       const input = document.querySelector('.input-prompt input');
@@ -95,15 +96,6 @@
       };
     }
 
-    // Hook up the volume control
-    const volumeControl = document.getElementById('volumeControl');
-    volumeControl.addEventListener('input', (e) => {
-      const volume = e.target.value / 100; // Convert 0���100 to 0.0–1.0
-      console.log('Volume set to:', volume);
-      // TODO: Hook this up to your audio element or gain node, e.g.:
-      // gainNode.gain.value = volume;
-    });
-
     // Add play and pause button functionality
     const playButton = document.getElementById('playButton');
     const pauseButton = document.getElementById('pauseButton');
@@ -141,7 +133,7 @@
     let currentHue = 300;
 
     function setup() {
-      canvas = createCanvas(800, 100);
+      canvas = createCanvas(700, 100);
       canvas.parent('vis-container');
       noStroke();
       colorMode(HSL, 360, 100, 100, 1);
