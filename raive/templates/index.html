@@ -6,7 +6,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>rAIve</title>
-  <link rel="stylesheet" href="./style.css">
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <!-- TODO: this works with flask only -->
   <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
@@ -48,10 +47,16 @@
     <form class="input-prompt" onsubmit="handleInput(); return false;">
       <input type="text" id="input" placeholder="Enter your text here">
     </form>
+    <div class="spinner-box hidden" id="spinner-box">
+      <div class="spinner"></div>
+    </div>    
   </main>
 
   <!-- JavaScript to handle input and playback -->
   <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('spinner-box')?.classList.add('hidden');
+    });
     async function handleInput() {
       const input = document.querySelector('.input-prompt input');
       if (input.value.trim() !== '') {
@@ -60,6 +65,7 @@
 
       const inputField = document.getElementById('input');
       const repl = document.getElementById('repl');
+      const spinner = document.getElementById('spinner-box');
       const currentText = repl.editor.getCode();
       const userText = inputField.value.trim();
       if (!userText) return; // avoid empty requests
@@ -67,15 +73,29 @@
       console.log('User input:', userText);
       console.log('Current text:', currentText);
 
+      spinner.classList.remove('hidden');
+
       // Send the user's prompt to your Python API
-      const response = await fetch('/api/engine', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({prompt: userText, currentText: currentText})
-      });
-      const data = await response.json();
-      const code = data.response.code;
-      console.log('Model response:', code);
+      try {
+        const response = await fetch('/api/engine', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({prompt: userText, currentText: currentText})
+        });
+
+        const data = await response.json();
+        const code = data.response.code;
+        console.log('Model response:', code);
+
+        // Move the API response code into the editor and play it
+        repl.editor.setCode(code);
+        repl.editor.evaluate();
+      } catch (err) {
+        console.error('API call failed:', err);
+      } finally {
+        // Hide spinner no matter what
+        spinner.classList.add('hidden');
+      }
 
       // Move the API response code into the editor and play it
       repl.editor.setCode(code);

@@ -159,6 +159,9 @@ main {
   color: #fff;
   margin-top: 2rem;
   margin-bottom: 4rem;
+  align-items: center;
+  position: relative;
+  justify-content: center;
 }
 
 .input-prompt input {
@@ -197,3 +200,38 @@ main {
   padding: 1rem;
 }
 
+/* Overlay for spinner */
+#spinner-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(255, 0, 255, 0.2); /* subtle outer ring */
+  border-top: 6px solid #ff00ff; /* bright neon pink */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow:
+    0 0 10px #ff00ff,
+    0 0 20px #ff00ff,
+    0 0 40px #ff00ff;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hidden {
+  display: none !important;
+}

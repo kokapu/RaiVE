@@ -23,7 +23,8 @@ class GeminiPro25:
             self.prompt += "Code: " + self.existing_code + "\n\n"
             self.prompt += "Prompt: " + user_prompt + "\n\n"
 
-    def get_code(self, user_prompt):
+    def get_code(self, user_prompt, current_code):
+        self.existing_code = current_code
         self.update_prompt(user_prompt)
         try:
             response = self.session.send_message(self.prompt)

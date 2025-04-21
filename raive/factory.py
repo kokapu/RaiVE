@@ -38,7 +38,8 @@ def create_app():
     @app.route("/api/engine", methods=["POST"])
     def update_sound():
         prompt = request.json["prompt"]
-        code = model.get_code(prompt)
+        current_code = request.json["currentText"]
+        code = model.get_code(prompt, current_code)
         response = {
             "prompt": prompt,
             "code": code,
