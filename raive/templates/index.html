@@ -97,10 +97,6 @@
         spinner.classList.add('hidden');
       }
 
-      // Move the API response code into the editor and play it
-      repl.editor.setCode(code);
-      repl.editor.evaluate();
-
       // Clear the input field
       inputField.value = '';
 
@@ -112,6 +108,7 @@
         originalOnDraw(haps, time, painters); // keep original behavior
 
         const active = haps.filter(h => h.isActive(time));
+        console.log('Active haps:', active);
         updateWave(active);
       };
     }
