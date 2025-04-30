@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 from raive.factory import create_app
 
 import os
+import subprocess
 import configparser
 import sys
 
@@ -27,6 +30,11 @@ except ValueError as e:
     )
     sys.exit(1)
 
-if __name__ == "__main__":
+
+def main():
     app = create_app()
     app.run(host="127.0.0.1", port=5000, debug=True)
+
+
+if __name__ == "__main__":
+    main()
