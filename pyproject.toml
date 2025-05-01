@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "raive"
+version = "0.1.0"
+description = "RaiVE ai-enhanced live-coding"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "flask",
+    "flask-cors",
+    "python-dotenv",
+    "requests",
+    "flask-session",
+    "huggingface-hub",
+    "bcrypt",
+    "flake8",
+    "sphinx",
+    "gunicorn",
+    "google-generativeai",
+]
+
+
+[tool.setuptools]
+py-modules = ["app"]
+
+# (or, for globs:)
+[tool.setuptools.packages.find]
+where   = ["."]
+include = ["raive*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.*"] 
+
+[project.scripts]
+raive = "app:main"

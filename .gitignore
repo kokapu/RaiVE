@@ -1,6 +1,9 @@
 .direnv
 .env
 
+result
+raive.egg-info
+
 __pycache__
 flask_session
 .DS_Store

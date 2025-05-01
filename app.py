@@ -1,32 +1,41 @@
+#!/usr/bin/env python3
+import multiprocessing
+
 from raive.factory import create_app
-
-import os
-import configparser
-import sys
+from gunicorn.app.base import BaseApplication
 
 
-config = configparser.ConfigParser()
-config_file_path = os.path.abspath(os.path.join("config.ini"))
+def main():
+    app = create_app()
 
-try:
-    if not os.path.exists(config_file_path):
-        raise FileNotFoundError(f"Configuration file '{config_file_path}' not found.")
+    options = {
+        "bind": "0.0.0.0:8000",
+        "workers": (multiprocessing.cpu_count() * 2)
+        + 1,  # 2 x CPU cores + 1 is a good rule
+        "accesslog": "-",  # send access logs to stdout
+        "errorlog": "-",  # send error logs to stdout
+        "loglevel": "info",
+    }
 
-    config.read(config_file_path)
-    # TODO: Validate config here
+    class StandaloneApplication(BaseApplication):
+        """Simple Gunicorn application wrapper."""
 
-except FileNotFoundError as e:
-    print(f"[ERROR] {e}")
-    print("[INFO] Please create a 'config.ini' file with the required configuration.")
-    sys.exit(1)
+        def __init__(self, app, options=None):
+            self.application = app
+            self.options = options or {}
+            super().__init__()
 
-except ValueError as e:
-    print(f"[ERROR] {e}")
-    print(
-        "[INFO] Please ensure the 'config.ini' file has the 'PROD' section and the 'DB_URI' key."
-    )
-    sys.exit(1)
+        def load_config(self):
+            cfg = self.cfg
+            for key, value in self.options.items():
+                if key in cfg.settings and value is not None:
+                    cfg.set(key.lower(), value)
+
+        def load(self):
+            return self.application
+
+    StandaloneApplication(app, options).run()
+
 
 if __name__ == "__main__":
-    app = create_app()
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    main()
