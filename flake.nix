@@ -27,8 +27,8 @@
           requests
           flask-session
           huggingface-hub
-          bcrypt 
           gunicorn
+          bcrypt 
           google-generativeai
           flake8
           sphinx
@@ -46,12 +46,9 @@
         contents = [ raiveApp ];
 
         config = {
-          # expose your listening port
           ExposedPorts = { "8000/tcp" = {}; };
-          # run Gunicorn on container start
-          Cmd = [ "gunicorn" "-w" "4" "app:main()" ];
-          WorkingDir = "/srv";
-          Env = [ "PYTHONUNBUFFERED=1" ];
+          Cmd = [ "raive" ];
+          WorkingDir = "/raive";
         };
       };
 
@@ -75,6 +72,7 @@
                 sphinx
                 gunicorn
                 google-generativeai
+                pip
               ])
             )
             just

@@ -2,6 +2,7 @@
 .env
 
 result
+raive.egg-info
 
 __pycache__
 flask_session
