@@ -1,22 +1,23 @@
 import google.generativeai as genai
+from flask import session
 
 
 class GeminiPro25:
-    def __init__(self, coding_env="TidalCycles", language="JavaScript"):
+    def __init__(self):
         self.google_api_keys = [
             "AIzaSyD1o715Q2sm8we7o_3AHt6TIrs8Wg571yU",
             "AIzaSyA0VpcGCGprYaF0ilGZo4tSt7RP1THihR0",
         ]
-        self.prompt = ""
-        self.existing_code = ""
-        self.coding_env = coding_env
-        self.language = language
-        self.cur_key = 0
+        self.cur_key = session.get("cur_key", 0)
+        self.prompt = session.get("prompt", "")
+        self.existing_code = session.get("existing_code", "")
+        self.session = None
         self.update_session()
 
     def update_session(self):
         key = self.google_api_keys[self.cur_key]
         self.cur_key = (self.cur_key + 1) % len(self.google_api_keys)
+        session["cur_key"] = self.cur_key
 
         genai.configure(api_key=key)
         self.session = genai.ChatSession(
@@ -33,26 +34,26 @@ class GeminiPro25:
                 self.prompt = file.read()
             self.prompt += "Code: " + self.existing_code + "\n\n"
             self.prompt += "Prompt: " + user_prompt + "\n\n"
+        session["prompt"] = self.prompt
 
     def get_code(self, user_prompt, current_code):
         self.existing_code = current_code
         self.update_prompt(user_prompt)
-        code = self.query_model(self.cur_key)
+        code = self.query_model(attempts=0)
         if code:
             self.existing_code = code
+            session["existing_code"] = self.existing_code
         return code
 
     def query_model(self, attempts):
-        if attempts == len(self.google_api_keys):
+        if attempts >= len(self.google_api_keys):
             return ""
-        else:
-            try:
-                response = self.session.send_message(self.prompt)
-            except Exception:
-                self.update_session()
-                return self.query_model(attempts + 1)
-            code = response.text
-            code = code.strip("```").strip("javascript")
+        try:
+            response = self.session.send_message(self.prompt)
+            code = response.text.strip("```").strip("javascript")
             if "tidalcycles/dirt-samples" not in code:
                 code = "samples('github:tidalcycles/dirt-samples')\n" + code
             return code
+        except Exception:
+            self.update_session()
+            return self.query_model(attempts + 1)
