@@ -40,6 +40,7 @@ def create_app():
         prompt = request.json["prompt"]
         current_code = request.json["currentText"]
         code = model.get_code(prompt, current_code)
+        # TODO: add flag whether the response was successfull
         response = {
             "prompt": prompt,
             "code": code,

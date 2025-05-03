@@ -235,3 +235,27 @@ main {
 .hidden {
   display: none !important;
 }
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  background-color: #3a3a3a;
+  color: #a9a9a9;
+}
+
+.input-wrapper input {
+  width: 100%;
+  background-color: #3a3a3a;
+  color: #a9a9a9;
+}
+
+.char-counter {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: #a9a9a9;
+  pointer-events: none;
+  user-select: none;
+}
