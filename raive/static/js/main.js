@@ -46,6 +46,7 @@ async function handleInput(event) {
   try {
     const res = await fetch('/api/engine', {
       method:  'POST',
+      credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       body:    JSON.stringify({ prompt: prompt, currentText: current })
     });
