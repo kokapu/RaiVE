@@ -3,7 +3,10 @@ import google.generativeai as genai
 
 class GeminiPro25:
     def __init__(self, coding_env="TidalCycles", language="JavaScript"):
-        self.google_api_keys = ["AIzaSyD1o715Q2sm8we7o_3AHt6TIrs8Wg571yU"]
+        self.google_api_keys = [
+            "AIzaSyD1o715Q2sm8we7o_3AHt6TIrs8Wg571yU",
+            "AIzaSyA0VpcGCGprYaF0ilGZo4tSt7RP1THihR0",
+        ]
         self.prompt = ""
         self.existing_code = ""
         self.coding_env = coding_env
@@ -45,7 +48,7 @@ class GeminiPro25:
         else:
             try:
                 response = self.session.send_message(self.prompt)
-            except Exception as e:
+            except Exception:
                 self.update_session()
                 return self.query_model(attempts + 1)
             code = response.text

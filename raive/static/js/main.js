@@ -1,5 +1,6 @@
 // ---- Constants ----
 const MAX_PROMPT_LENGTH = 200;
+const MAX_CODE_LINES = 20;
 
 // ---- Sanitizer ----
 function sanitize(str) {
@@ -21,6 +22,8 @@ async function handleInput(event) {
   if (userText.length > MAX_PROMPT_LENGTH) {
     userText = userText.slice(0, MAX_PROMPT_LENGTH);
   }
+  
+
   if (!userText) return;
 
   // inputField.classList.add('text-entered');
@@ -32,7 +35,12 @@ async function handleInput(event) {
   const repl    = document.getElementById('repl');
   const spinner = document.getElementById('spinner-box');
   const current = repl.editor.getCode();
+  let lines = current.split('\n');
 
+  // TODO let the user know that there is a line limit here
+  if (lines.length >= MAX_CODE_LINES) {
+    lines = lines.slice(0, MAX_CODE_LINES).join("\n");
+  }
   spinner.classList.remove('hidden');
 
   try {
