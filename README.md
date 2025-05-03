@@ -1,4 +1,4 @@
-# rAIve
+# RaiVE
 
 ## Setting up
 ### Dependencies
