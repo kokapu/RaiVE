@@ -37,8 +37,11 @@
     </div>
 
     <!-- Prompt / Input Area -->
-    <form class="input-prompt" onsubmit="handleInput(event); return false;">
-      <input type="text" id="input" placeholder="Enter your text here" maxlength="200">
+    <form class="input-prompt" onsubmit="handleInput(event)">
+      <div class="input-wrapper">
+        <input type="text" id="input" placeholder="Enter your text here" maxlength="100" required>
+        <span class="char-counter" id="counter">0/100</span>
+      </div>
     </form>
 
     <div class="spinner-box hidden" id="spinner-box">

@@ -18,11 +18,10 @@ async function handleInput(event) {
   const inputField = document.getElementById('input');
   let userText = inputField.value.trim();
 
-  // enforce JS-side length cap
-  // if (userText.length > MAX_PROMPT_LENGTH) {
-  //   userText = userText.slice(0, MAX_PROMPT_LENGTH);
-  // }
-  // if (!userText) return;
+  if (userText.length > MAX_PROMPT_LENGTH) {
+    userText = userText.slice(0, MAX_PROMPT_LENGTH);
+  }
+  if (!userText) return;
 
   // inputField.classList.add('text-entered');
   // console.log(userText)
@@ -79,6 +78,13 @@ document.getElementById('playButton').addEventListener('click', () => {
 document.getElementById('pauseButton').addEventListener('click', () => {
   const r = document.getElementById('repl');
   r?.editor?.stop();
+});
+
+const input = document.getElementById('input');
+const counter = document.getElementById('counter');
+input.addEventListener('input', () => {
+  const len = input.value.length;
+  counter.textContent = `${len}/${input.maxLength}`;
 });
 
 // ---- Wave visualization code below ----
