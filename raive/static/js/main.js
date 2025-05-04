@@ -50,6 +50,12 @@ async function handleInput(event) {
       headers: {'Content-Type': 'application/json'},
       body:    JSON.stringify({ prompt: prompt, currentText: current })
     });
+
+    if (res.status === 429) {
+      showPopup("The model is currently rate limited. Please try again in a few seconds.");
+      return;
+    }
+
     const data = await res.json();
     const code = data.response.code;
 
@@ -191,3 +197,18 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('spinner-box')?.classList.add('hidden');
 });
 
+
+function showPopup(message, timeout = 4000) {
+  const popup = document.getElementById('popup');
+  popup.textContent = message;
+  popup.classList.remove('hidden');
+  popup.classList.add('show', 'shake');
+
+  // Remove shake after it's done to allow retriggering
+  setTimeout(() => popup.classList.remove('shake'), 500);
+
+  setTimeout(() => {
+    popup.classList.remove('show');
+    setTimeout(() => popup.classList.add('hidden'), 400);
+  }, timeout);
+}
