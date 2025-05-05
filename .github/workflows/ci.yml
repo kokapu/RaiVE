@@ -20,7 +20,8 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - run: |
-          nix develop -c just lint 
+          nix develop -c just lint
+
   build-container:
     name: Build Docker container
     runs-on: ubuntu-latest
