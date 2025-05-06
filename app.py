@@ -15,6 +15,7 @@ def main():
         "accesslog": "-",  # send access logs to stdout
         "errorlog": "-",  # send error logs to stdout
         "loglevel": "info",
+        "timeout": 60,
     }
 
     class StandaloneApplication(BaseApplication):
