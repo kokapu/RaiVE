@@ -9,13 +9,13 @@ def main():
     app = create_app()
 
     options = {
-        "bind": "0.0.0.0:8000",
+        "bind": "127.0.0.1:8000",
         "workers": (multiprocessing.cpu_count() * 2)
         + 1,  # 2 x CPU cores + 1 is a good rule
         "accesslog": "-",  # send access logs to stdout
         "errorlog": "-",  # send error logs to stdout
         "loglevel": "info",
-        "timeout": 60,
+        "timeout": 120,
     }
 
     class StandaloneApplication(BaseApplication):
