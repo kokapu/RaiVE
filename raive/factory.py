@@ -54,8 +54,8 @@ def create_app():
         model = Model()  # instantiate per request, uses session inside
         code = model.get_code(prompt, current_code)
 
-        # if not code:
-        return jsonify({"error": "Rate limited. Please try again shortly."}), 429
+        if not code:
+            return jsonify({"error": "Rate limited. Please try again shortly."}), 429
 
         response = {
             "prompt": prompt,
