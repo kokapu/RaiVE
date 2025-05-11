@@ -3,14 +3,6 @@
 version = 4
 
 [[package]]
-name = "RaiVE"
-version = "0.1.0"
-dependencies = [
- "gemini-rust",
- "tokio",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -750,6 +742,15 @@ name = "r-efi"
 version = "5.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74765f6d916ee2faa39bc8e68e4f3ed8949b48cccdac59983d287a7cb71ce9c5"
+
+[[package]]
+name = "raive"
+version = "0.1.0"
+dependencies = [
+ "gemini-rust",
+ "tokio",
+ "wasm-bindgen",
+]
 
 [[package]]
 name = "rand"

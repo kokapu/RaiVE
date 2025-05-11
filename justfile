@@ -7,7 +7,8 @@ default:
 
 [doc('Build')]
 build:
-    cargo build --target wasm32-wasip1 --release
+    cargo build --target wasm32-unknown-unknown --release
+    wasm-bindgen --target web --out-dir web-out ./target_dirs/nix_rustc/wasm32-unknown-unknown/release/raive.wasm
 
 
 [doc('Linting')]
