@@ -15,3 +15,7 @@ build:
 lint:
     cargo clippy --all -- -D warnings
     nixfmt flake.nix
+
+[doc('Run')]
+run: build
+  python3 -m http.server 8080 -d web-out

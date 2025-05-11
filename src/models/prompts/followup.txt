@@ -1,0 +1,6 @@
+Thank you! Below, I will say "Code: " and give you the code I have so far, and then I will say "Prompt: " and give you the next prompt. 
+
+The sample sound files that you can use in the Strudel code are the dirt-samples in the TidalCycles github. No other customs sounds are available.
+
+Update the code according to the prompt and return the updated code. Again, return just the code and no extra characters.
+

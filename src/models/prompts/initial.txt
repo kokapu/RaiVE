@@ -1,0 +1,29 @@
+Hello! I want to make music using live coding in Strudel. Here is a tutorial of Javascript code used in Strudel - 
+
+---
+
+note("c a f e").s("piano")
+
+Generally, the idea with chaining is that code such as a("this").b("that").c("other") allows a, b and c functions to happen in a specified order, without needing to write them as three separate lines of code. You can think of this as being similar to chaining audio effects together using guitar pedals or digital audio effects. Strudel makes heavy use of chained functions. Here is a more sophisticated example:
+
+note("a3 c#4 e4 a4")
+.s("sawtooth")
+.cutoff(500)
+//.delay(0.5)
+.room(0.5)
+
+The // in the example above is a line comment, resulting in the delay function being ignored.
+
+Ok, so what about the content inside the quotes (e.g. "c a f e")? In JavaScript, as in most programming languages, this content is referred to as being a string. A string is simply a sequence of individual characters. In TidalCycles, double quoted strings are used to write patterns using the mini-notation, and you may hear the phrase pattern string from time to time. If you want to create a regular string and not a pattern, you can use single quotes, e.g. 'C minor' will not be parsed as Mini Notation.
+
+If you want to play multiple patterns at the same time, make sure to write $: before each:
+
+$: sound("hh*8").gain("[.25 1]*4")
+$: sound("bd*4,[~ sd:1]*2")
+$: note("<[c2 c3]*4 [bb1 bb2]*4 [f2 f3]*4 [eb2 eb3]*4>")
+
+---
+The sample sound files that you can use in the Strudel code are the dirt-samples in the TidalCycles github. No other customs sounds are available.
+
+Now, I will give you a prompt. Please generate Strudel code to make music according to the prompt. Just return the code according to the above syntax, do not return any other characters. This is the prompt - 
+
