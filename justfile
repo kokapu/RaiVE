@@ -8,6 +8,7 @@ default:
 [doc('Build')]
 build:
     wasm-pack build --target web
+    rm pkg/.gitignore
 
 [doc('Linting')]
 lint:
@@ -15,5 +16,5 @@ lint:
     nixfmt flake.nix
 
 [doc('Run')]
-run: 
+run: build
   python3 -m http.server 8080 -d pkg

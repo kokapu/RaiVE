@@ -20,7 +20,7 @@ pub struct GeminiClient {
 impl GeminiClient {
     fn update_api_key(&mut self) {
         self.model = Gemini::new(API_KEYS[self.cur_api_key]);
-        self.cur_api_key = self.cur_api_key + 1 % NUM_API_KEYS;
+        self.cur_api_key = (self.cur_api_key + 1) % NUM_API_KEYS;
     }
 }
 
