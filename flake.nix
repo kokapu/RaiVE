@@ -55,6 +55,11 @@
           pkg-config
           rustToolchain # cargo, etc.
           wasm-bindgen-cli
+          wabt
+          wasmedge # Wasm runtime
+          wasmtime # Wasm runtime
+          wasm-pack
+          cargo-edit # cargo add, cargo rm, etc.
           just
         ];
       };
