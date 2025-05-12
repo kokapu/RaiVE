@@ -5,13 +5,11 @@
   "files": [
     "raive_bg.wasm",
     "raive.js",
-    "raive_bg.js",
     "raive.d.ts"
   ],
   "main": "raive.js",
   "types": "raive.d.ts",
   "sideEffects": [
-    "./raive.js",
     "./snippets/*"
   ]
 }

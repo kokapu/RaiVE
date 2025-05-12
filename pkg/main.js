@@ -12,67 +12,6 @@ function sanitize(str) {
     .replace(/'/g, "&#39;");
 }
 
-// ---- Form handler ----
-async function handleInput(event) {
-  event.preventDefault();
-
-  const inputField = document.getElementById('input');
-  let userText = inputField.value.trim();
-
-  if (userText.length > MAX_PROMPT_LENGTH) {
-    userText = userText.slice(0, MAX_PROMPT_LENGTH);
-  }
-  
-
-  if (!userText) return;
-
-  // inputField.classList.add('text-entered');
-  // console.log(userText)
-
-  const prompt = userText;
-
-  console.log(prompt)
-  const repl    = document.getElementById('repl');
-  const spinner = document.getElementById('spinner-box');
-  const current = repl.editor.getCode();
-  let lines = current.split('\n');
-
-  // TODO let the user know that there is a line limit here
-  if (lines.length >= MAX_CODE_LINES) {
-    lines = lines.slice(0, MAX_CODE_LINES).join("\n");
-  }
-  spinner.classList.remove('hidden');
-
-  try {
-    const res = await fetch('/api/engine', {
-      method:  'POST',
-      credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
-      body:    JSON.stringify({ prompt: prompt, currentText: current })
-    });
-
-    if (res.status === 429) {
-      showPopup("The model is currently rate limited. Please try again in a few seconds.");
-      return;
-    }
-
-    const data = await res.json();
-    const code = data.response.code;
-
-    repl.editor.setCode(code);
-    repl.editor.evaluate();
-
-  } catch (err) {
-    console.error('API call failed:', err);
-
-  } finally {
-    spinner.classList.add('hidden');
-  }
-
-  inputField.value = '';
-  attachDrawHookOnce(repl);
-}
-
 // ---- onDraw wrapper helper ----
 function attachDrawHookOnce(repl) {
   if (repl._hasDrawWrap) return;

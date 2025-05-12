@@ -1,6 +1,8 @@
 mod model;
 mod models;
 
+extern crate wasm_bindgen;
+
 use std::sync::Mutex;
 use wasm_bindgen::prelude::*;
 
