@@ -51,7 +51,10 @@
           export CARGO_TARGET_DIR="$(git rev-parse --show-toplevel)/target_dirs/nix_rustc";
         '';
         nativeBuildInputs = with pkgs; [
-          python3 # for the webserver
+
+          nodePackages.vercel
+          nodePackages.npm
+          # python3 # for the webserver
           pkg-config
           rustToolchain # cargo, etc.
           wasm-bindgen-cli

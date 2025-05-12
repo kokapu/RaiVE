@@ -7,7 +7,7 @@ default:
 
 [doc('Build')]
 build:
-    wasm-pack build
+    wasm-pack build --target web
     # cargo build --target wasm32-unknown-unknown --release
     # wasm-bindgen --target web --out-dir web-out ./target_dirs/nix_rustc/wasm32-unknown-unknown/release/raive.wasm
 
