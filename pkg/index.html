@@ -8,6 +8,10 @@
     <link rel="icon" href="images/RaiVEIcon.ico" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.min.js"></script>
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
   </head>
 
   <body>
@@ -58,6 +62,8 @@
 
       // Hook onto window so HTML can call it
       window.handleInput = async function handleInput(event) {
+        const MAX_PROMPT_LENGTH = 200;
+        const MAX_CODE_LINES = 20;
         event.preventDefault();
 
         const inputField = document.getElementById('input');

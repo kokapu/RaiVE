@@ -8,9 +8,6 @@ default:
 [doc('Build')]
 build:
     wasm-pack build --target web
-    # cargo build --target wasm32-unknown-unknown --release
-    # wasm-bindgen --target web --out-dir web-out ./target_dirs/nix_rustc/wasm32-unknown-unknown/release/raive.wasm
-
 
 [doc('Linting')]
 lint:
@@ -18,5 +15,5 @@ lint:
     nixfmt flake.nix
 
 [doc('Run')]
-run: build
-  python3 -m http.server 8080 -d web-out
+run: 
+  python3 -m http.server 8080 -d pkg
