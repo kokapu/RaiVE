@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RaiVE</title>
+    <link rel="icon" href="images/RaiVEIcon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.min.js"></script>
+  </head>
+
+  <body>
+    <!-- Header Section -->
+    <header>
+      <div class="header-left">
+        <a href="https://github.com/kokapu/RaiVE">
+          <img class="logo" src="images/RaiVELogo.webp" alt="rAIve Logo">
+        </a>
+      </div>
+      <div class="header-title">RaiVE</div>
+      <div class="header-right"></div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="vis-wrapper">
+        <div id="vis-container" style="width: 700px; height: 100px;"></div>
+        <div class="controls-container">
+          <button id="playButton" class="control-button">▶</button>
+          <button id="pauseButton" class="control-button">⏸</button>
+        </div>
+      </div>
+      <script src="strudel/index.js"></script>
+      <div class="editor-container">
+        <strudel-editor id="repl"></strudel-editor>
+      </div>
+
+      <!-- Prompt / Input Area -->
+      <form class="input-prompt" onsubmit="handleInput(event)">
+        <div class="input-wrapper">
+          <input type="text" id="input" placeholder="Enter your text here" maxlength="100" required>
+          <span class="char-counter" id="counter">0/100</span>
+        </div>
+      </form>
+
+      <div class="spinner-box hidden" id="spinner-box">
+        <div class="spinner"></div>
+      </div>
+    </main>
+
+    <script src="main.js"></script>
+    <script type="module">
+      import init, { init_client, query_model } from './raive.js';
+
+      await init();
+      init_client();
+
+      // Hook onto window so HTML can call it
+      window.handleInput = async function handleInput(event) {
+        event.preventDefault();
+
+        const inputField = document.getElementById('input');
+        let userText = inputField.value.trim();
+
+        if (userText.length > MAX_PROMPT_LENGTH) {
+          userText = userText.slice(0, MAX_PROMPT_LENGTH);
+        }
+
+        if (!userText) return;
+
+        const prompt = userText;
+        const repl = document.getElementById('repl');
+        const spinner = document.getElementById('spinner-box');
+        let current = repl.editor.getCode();
+
+        let lines = current.split('\n');
+        if (lines.length >= MAX_CODE_LINES) {
+          current = lines.slice(0, MAX_CODE_LINES).join("\n");
+        }
+
+        spinner.classList.remove('hidden');
+
+        try {
+          const code = await query_model(prompt, current);
+          repl.editor.setCode(code);
+          repl.editor.evaluate();
+        } catch (err) {
+          console.error('WASM call failed:', err);
+          showPopup("An error occurred when generating code.");
+        } finally {
+          spinner.classList.add('hidden');
+        }
+
+        inputField.value = '';
+        attachDrawHookOnce(repl);
+      };
+    </script>
+    <div id="popup" class="popup hidden"></div>
+  </body>
+</html>

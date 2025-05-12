@@ -1,14 +1,13 @@
 mod model;
 mod models;
 
-use once_cell::sync::Lazy;
 use std::sync::Mutex;
 use wasm_bindgen::prelude::*;
 
 use model::Model;
 use models::gemini::GeminiClient;
 
-static CLIENT: Lazy<Mutex<Option<GeminiClient>>> = Lazy::new(|| Mutex::new(None));
+static CLIENT: Mutex<Option<GeminiClient>> = Mutex::new(None);
 
 #[wasm_bindgen(start)]
 pub fn init_client() {
@@ -24,6 +23,6 @@ pub async fn query_model(prompt: &str, current_text: &str) -> String {
         client.update_prompt(prompt, current_text);
         client.query(0).await
     } else {
-        unreachable!()
+        "".into()
     }
 }

@@ -5,6 +5,5 @@ target_dirs
 *.wasm
 
 result
-web-out
 
 

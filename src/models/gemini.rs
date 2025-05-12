@@ -8,8 +8,8 @@ const API_KEYS: [&str; NUM_API_KEYS] = [
     "AIzaSyA0VpcGCGprYaF0ilGZo4tSt7RP1THihR0",
 ];
 
-static INITIAL_PROMPT: String = include_str!("prompts/initial.txt").into();
-static FOLLOWUP_PROMPT: String = include_str!("prompts/followup.txt").into();
+static INITIAL_PROMPT: &str = include_str!("prompts/initial.txt");
+static FOLLOWUP_PROMPT: &str = include_str!("prompts/followup.txt");
 
 pub struct GeminiClient {
     model: Gemini,
@@ -36,8 +36,7 @@ impl Model for GeminiClient {
     fn update_prompt(&mut self, user_prompt: &str, existing_code: &str) {
         if self.prompt.trim().is_empty() {
             // First-time prompt: start with initial template
-            self.prompt = INITIAL_PROMPT.to_string();
-            self.prompt += user_prompt;
+            self.prompt = format!("{}Prompt: {}\n\n", INITIAL_PROMPT, user_prompt);
         } else {
             // Follow-up: add prior context and user prompt
             self.prompt = format!(
@@ -51,12 +50,23 @@ impl Model for GeminiClient {
         match self
             .model
             .generate_content()
-            .with_system_prompt("You are a helpful assistant.")
+            .with_system_prompt("You are a helpful assistant.") //TODO: make this better
             .with_user_message(&self.prompt)
             .execute()
             .await
         {
-            Ok(response) => response.text(),
+            Ok(response) => {
+                let response_text = response.text();
+                let mut text = response_text.as_str();
+                text = text.trim_matches('`').trim_start_matches("javascript");
+                let mut code = text.trim().to_string();
+
+                if !code.contains("tidalcycles/dirt-samples") {
+                    code = format!("samples('github:tidalcycles/dirt-samples')\n{}", code);
+                }
+
+                code
+            }
             Err(_) => {
                 if attempts <= NUM_API_KEYS {
                     self.update_api_key();

@@ -21,6 +21,7 @@
             (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
       ];
 
+      # TODO: fix this package
       wasmPkg = pkgs.rustPlatform.buildRustPackage {
           pname = "raive";
           src = self;
