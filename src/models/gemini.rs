@@ -46,35 +46,37 @@ impl Model for GeminiClient {
         }
     }
 
-    async fn query(&mut self, attempts: usize) -> String {
-        match self
-            .model
-            .generate_content()
-            .with_system_prompt("You are a helpful assistant.") //TODO: make this better
-            .with_user_message(&self.prompt)
-            .execute()
-            .await
-        {
-            Ok(response) => {
-                let response_text = response.text();
-                let mut text = response_text.as_str();
-                text = text.trim_matches('`').trim_start_matches("javascript");
-                let mut code = text.trim().to_string();
-
-                if !code.contains("tidalcycles/dirt-samples") {
+    /// Try each API key in turn. On a non-empty reply, return it immediately;
+    /// otherwise rotate to the next key. If all keys fail, return an empty string.
+    async fn query(&mut self) -> String {
+        for _ in 0..NUM_API_KEYS {
+            if let Ok(response) = self
+                .model
+                .generate_content()
+                .with_system_prompt("You are a helpful assistant.")
+                .with_user_message(&self.prompt)
+                .execute()
+                .await
+            {
+                let mut code = response
+                    .text()
+                    .trim_matches('`')
+                    .trim_start_matches("javascript")
+                    .trim()
+                    .to_string();
+                if !code.is_empty() && !code.contains("tidalcycles/dirt-samples") {
                     code = format!("samples('github:tidalcycles/dirt-samples')\n{}", code);
                 }
-
-                code
-            }
-            Err(_) => {
-                if attempts <= NUM_API_KEYS {
-                    self.update_api_key();
-                    Box::pin(self.query(attempts + 1)).await
-                } else {
-                    "".into()
+                if !code.is_empty() {
+                    return code;
                 }
             }
+
+            // Rotate API key and try again
+            self.update_api_key();
         }
+
+        // All keys exhausted or always empty → give up
+        String::new()
     }
 }

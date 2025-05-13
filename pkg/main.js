@@ -1,8 +1,12 @@
-// ---- Constants ----
+// =======================================
+// Constants
+// =======================================
 const MAX_PROMPT_LENGTH = 200;
-const MAX_CODE_LINES = 20;
+const MAX_CODE_LINES    = 20;
 
-// ---- Sanitizer ----
+// =======================================
+// Utility Functions
+// =======================================
 function sanitize(str) {
   return str
     .replace(/&/g, "&amp;")
@@ -12,142 +16,224 @@ function sanitize(str) {
     .replace(/'/g, "&#39;");
 }
 
-// ---- onDraw wrapper helper ----
+function noteToHue(note) {
+  const NOTES = ['c','d','e','f','g','a','b'];
+  const idx   = NOTES.indexOf(note[0]?.toLowerCase());
+  return map(idx, 0, NOTES.length - 1, 200, 340);
+}
+
+// draw a vertical gradient from c1 → c2
+function setGradient(x, y, w, h, c1, c2) {
+  noFill();
+  for (let i = y; i <= y + h; i++) {
+    const inter = map(i, y, y + h, 0, 1);
+    stroke(lerpColor(c1, c2, inter));
+    line(x, i, x + w, i);
+  }
+}
+
+// =======================================
+// REPL Draw-hook Helper
+// =======================================
 function attachDrawHookOnce(repl) {
   if (repl._hasDrawWrap) return;
-  const origDraw = repl.editor.onDraw.bind(repl.editor);
+  const originalOnDraw = repl.editor.onDraw.bind(repl.editor);
   repl.editor.onDraw = (haps, time, painters) => {
-    origDraw(haps, time, painters);
+    originalOnDraw(haps, time, painters);
     const active = haps.filter(h => h.isActive(time));
     updateWave(active);
   };
   repl._hasDrawWrap = true;
 }
 
-// ---- Play / Pause buttons ----
-document.getElementById('playButton').addEventListener('click', () => {
-  const r = document.getElementById('repl');
-  r?.editor?.evaluate();
-});
-document.getElementById('pauseButton').addEventListener('click', () => {
-  const r = document.getElementById('repl');
-  r?.editor?.stop();
-});
+// =======================================
+// Popup Notification
+// =======================================
+function showPopup(message, timeout = 4000) {
+  const popup = document.getElementById('popup');
+  popup.textContent = message;
+  popup.classList.remove('hidden');
+  popup.classList.add('show', 'shake');
+  setTimeout(() => popup.classList.remove('shake'), 500);
+  setTimeout(() => {
+    popup.classList.remove('show');
+    setTimeout(() => popup.classList.add('hidden'), 400);
+  }, timeout);
+}
 
-const input = document.getElementById('input');
-const counter = document.getElementById('counter');
-input.addEventListener('input', () => {
-  const len = input.value.length;
-  counter.textContent = `${len}/${input.maxLength}`;
-});
+// =======================================
+// DOM Event Listeners & Initialization
+// =======================================
+function setupControls() {
+  document.getElementById('playButton')?.addEventListener('click', () => {
+    document.getElementById('repl')?.editor?.evaluate();
+  });
+  document.getElementById('pauseButton')?.addEventListener('click', () => {
+    document.getElementById('repl')?.editor?.stop();
+  });
 
-// ---- Wave visualization code below ----
-let numPoints = 200, waveY = [], droplets = [];
-let waveSettings = { gain:0.5, cutoff:500, note:'c4', room:0.3, clip:0.2, s:'sine' };
-let targetHue = 300, currentHue = 300;
-let lastDropletTime = 0, dropletCooldown = 200;
+  // Clear button styling + handler
+  const clearBtn = document.getElementById('clearButton');
+  if (clearBtn) {
+    clearBtn.classList.add('control-button');
+    clearBtn.innerHTML = '🗑️';
+    clearBtn.title     = 'Clear code';
+    clearBtn.addEventListener('click', () => {
+      const repl = document.getElementById('repl');
+      repl?.editor?.setCode('');
+      showPopup('🧹 Code cleared – session reset.', 2000);
+    });
+  }
+
+  // Help button styling + handler
+  const helpBtn = document.getElementById('helpButton');
+  if (helpBtn) {
+    helpBtn.classList.add('control-button');
+    helpBtn.innerHTML = '❓';
+    helpBtn.title     = 'Help';
+    helpBtn.addEventListener('click', () => {
+      showPopup(
+        '▶️ Run (model). ⏸️ Pause. 🗑️ Clear code. ’?’ shows this tip. ' +
+        'If model is rate-limited, edit manually!',
+        8000
+      );
+    });
+  }
+
+  const inputEl   = document.getElementById('input');
+  const counterEl = document.getElementById('counter');
+  if (inputEl && counterEl) {
+    inputEl.maxLength = MAX_PROMPT_LENGTH;
+    inputEl.addEventListener('input', () => {
+      counterEl.textContent = `${inputEl.value.length}/${inputEl.maxLength}`;
+    });
+  }
+
+  document.getElementById('spinner-box')?.classList.add('hidden');
+}
+window.addEventListener('DOMContentLoaded', setupControls);
+
+// =======================================
+// Wave Visualization (p5.js)
+// =======================================
+const waveVis = {
+  numPoints:       200,
+  waveY:           [],
+  droplets:        [],
+  settings:        { gain:0.5, cutoff:500, note:'c4', room:0.3, clip:0.2, s:'sine' },
+  currentHue:      300,
+  lastDropletTime: 0,
+  dropletCooldown: 200,
+};
 
 function setup() {
   const canvas = createCanvas(700, 100);
   canvas.parent('vis-container');
   noStroke();
   colorMode(HSL, 360, 100, 100, 1);
-  for (let i = 0; i < numPoints; i++) waveY[i] = height/2;
+  for (let i = 0; i < waveVis.numPoints; i++) {
+    waveVis.waveY[i] = height / 2;
+  }
 }
 
 function draw() {
-  clear();
-  let tgt = noteToHue(waveSettings.note);
-  currentHue = lerp(currentHue, tgt, 0.05);
-  fill(currentHue, 80, 60, 0.5);
+  // 1) Background gradient
+  const topColor    = color(waveVis.currentHue, 60, 20, 0.8);
+  const bottomColor = color((waveVis.currentHue + 60) % 360, 40, 50, 0.4);
+  setGradient(0, 0, width, height, topColor, bottomColor);
 
-  let amp = waveSettings.gain * 80;
-  let freq = map(waveSettings.cutoff, 200,2000,0.2,2);
-  let soft = map(waveSettings.room, 0,1,2,10);
-  let sharp= map(waveSettings.clip, 0,1,1,5);
+  // 2) Update hue
+  const targetHue = noteToHue(waveVis.settings.note);
+  waveVis.currentHue = lerp(waveVis.currentHue, targetHue, 0.05);
 
+  // 3) Compute wave params
+  const amp    = waveVis.settings.gain * 80;
+  const freq   = map(waveVis.settings.cutoff, 200, 2000, 0.2, 2);
+  const soft   = map(waveVis.settings.room, 0, 1, 2, 10);
+  const sharp  = map(waveVis.settings.clip, 0, 1, 1, 5);
+  const isBass = waveVis.settings.s.includes('bass');
+
+  // 4) Draw smoothed waveform stroke
+  stroke(waveVis.currentHue, 100, 70, 0.8);
+  strokeWeight(3);
+  noFill();
   beginShape();
-  vertex(0,height);
-  for (let i=0; i<numPoints; i++){
-    let x = (i/numPoints)*width;
-    let phase = frameCount*0.01 + i/soft;
-    let noiseOff = noise(i*0.05,frameCount*0.01)*sharp;
-    let fn = waveSettings.s.includes('bass') ? noise : sin;
-    let y = height/2 + fn(phase*freq + noiseOff)*amp;
-    vertex(x,y);
+  for (let i = 0; i < waveVis.numPoints; i++) {
+    const x        = (i / waveVis.numPoints) * width;
+    const phase    = frameCount * 0.01 + i / soft;
+    const noiseOff = noise(i * 0.05, frameCount * 0.01) * sharp;
+    const rawY     = height / 2 + (isBass ? noise(phase * freq + noiseOff) : sin(phase * freq + noiseOff)) * amp;
+    // lerp into stored waveY for smoothing
+    waveVis.waveY[i] = lerp(waveVis.waveY[i], rawY, 0.1);
+    vertex(x, waveVis.waveY[i]);
   }
-  vertex(width,height);
+  endShape();
+
+  // 5) Fill under the curve
+  noStroke();
+  fill(waveVis.currentHue, 80, 60, 0.2);
+  beginShape();
+  vertex(0, height);
+  for (let i = 0; i < waveVis.numPoints; i++) {
+    const x = (i / waveVis.numPoints) * width;
+    vertex(x, waveVis.waveY[i]);
+  }
+  vertex(width, height);
   endShape(CLOSE);
 
-  for (let i=droplets.length-1; i>=0; i--){
-    let d = droplets[i];
-    fill(d.hue,90,70,d.life);
-    ellipse(d.x,d.y,d.r*2);
+  // 6) Droplets with glow
+  drawingContext.shadowBlur   = 15;
+  drawingContext.shadowColor  = `hsla(${waveVis.currentHue},100%,80%,0.5)`;
+  for (let i = waveVis.droplets.length - 1; i >= 0; i--) {
+    const d = waveVis.droplets[i];
+    fill(d.hue, 90, 70, d.life * 0.8);
+    ellipse(d.x, d.y, d.r * 2);
     d.life -= 0.02;
     d.y   += 0.7;
-    if (d.life<=0) droplets.splice(i,1);
+    if (d.life <= 0) waveVis.droplets.splice(i, 1);
   }
+  drawingContext.shadowBlur = 0;
 }
 
 function updateWave(haps) {
   if (!haps.length) return;
-  let now = millis();
-  if (now - lastDropletTime > dropletCooldown) {
-    let sum = {gain:0, cutoff:0, room:0, clip:0}, notes=[], src=[];
-    for (let h of haps) {
-      sum.gain   += h.value.gain   ?? 0.3;
-      sum.cutoff += h.value.cutoff ?? 800;
-      sum.room   += h.value.room   ?? 0.3;
-      sum.clip   += h.value.clip   ?? 0.2;
-      if (h.value.note) notes.push(h.value.note);
-      if (h.value.s)    src.push(h.s);
-    }
-    let cnt = haps.length;
-    waveSettings = {
-      gain: sum.gain/ cnt,
-      cutoff: sum.cutoff/ cnt,
-      room: sum.room/ cnt,
-      clip: sum.clip/ cnt,
-      note: notes[Math.floor(Math.random()*notes.length)] || 'c4',
-      s:    src.includes('bass') ? 'bass' : 'sine',
-    };
-    targetHue = noteToHue(waveSettings.note);
-    for (let i=0; i<Math.min(cnt,2); i++){
-      droplets.push({
-        x: random(width),
-        y: random(height/2-10, height/2+10),
-        r: random(3,6),
-        life:1.0,
-        hue: currentHue,
-      });
-    }
-    lastDropletTime = now;
+  const now = millis();
+  if (now - waveVis.lastDropletTime <= waveVis.dropletCooldown) return;
+
+  const agg   = { gain:0, cutoff:0, room:0, clip:0 };
+  const notes = [], srcs = [];
+  for (const h of haps) {
+    agg.gain   += h.value.gain   ?? 0.3;
+    agg.cutoff += h.value.cutoff ?? 800;
+    agg.room   += h.value.room   ?? 0.3;
+    agg.clip   += h.value.clip   ?? 0.2;
+    if (h.value.note) notes.push(h.value.note);
+    if (h.value.s)    srcs.push(h.value.s);
   }
+
+  const cnt = haps.length;
+  waveVis.settings = {
+    gain:   agg.gain   / cnt,
+    cutoff: agg.cutoff / cnt,
+    room:   agg.room   / cnt,
+    clip:   agg.clip   / cnt,
+    note:   notes.length
+              ? random(notes)
+              : 'c4',
+    s:      srcs.includes('bass') ? 'bass' : 'sine',
+  };
+
+  for (let i = 0; i < Math.min(cnt, 2); i++) {
+    waveVis.droplets.push({
+      x:    random(width),
+      y:    random(height/2 - 10, height/2 + 10),
+      r:    random(3, 6),
+      life: 1.0,
+      hue:  waveVis.currentHue,
+    });
+  }
+
+  waveVis.lastDropletTime = now;
 }
 
-function noteToHue(note) {
-  const notes = ['c','d','e','f','g','a','b'];
-  let idx = notes.indexOf(note[0]?.toLowerCase());
-  return map(idx,0,notes.length-1,200,340);
-}
-
-// Hide spinner on load
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('spinner-box')?.classList.add('hidden');
-});
-
-
-function showPopup(message, timeout = 4000) {
-  const popup = document.getElementById('popup');
-  popup.textContent = message;
-  popup.classList.remove('hidden');
-  popup.classList.add('show', 'shake');
-
-  // Remove shake after it's done to allow retriggering
-  setTimeout(() => popup.classList.remove('shake'), 500);
-
-  setTimeout(() => {
-    popup.classList.remove('show');
-    setTimeout(() => popup.classList.add('hidden'), 400);
-  }, timeout);
-}
+window.updateWave = updateWave;

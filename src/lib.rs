@@ -29,7 +29,7 @@ pub async fn query_model(prompt: &str, current_text: &str) -> String {
     let mut client_opt = CLIENT.lock().await;
     if let Some(client) = &mut *client_opt {
         client.update_prompt(prompt, current_text);
-        client.query(0).await
+        client.query().await
     } else {
         "".into()
     }
