@@ -1,0 +1,62 @@
+/* Header styles */
+header {
+  width: 100%;
+  background-color: rgba(51, 28, 66, 0.8);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.5rem;
+  backdrop-filter: blur(6px);
+  z-index: 10;
+}
+.header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 6px #ca23ca, 0 0 12px #ca23ca;
+  pointer-events: none; /* So it doesn't block header interactions */
+  z-index: 11;
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-left {
+  gap: 1rem;
+}
+
+.header-right {
+  gap: 1rem;
+}
+
+/* Main layout */
+main {
+  width: 90%;
+  max-width: 800px;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vis-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+#vis-container {
+  flex-shrink: 0;
+  border: 2px solid #ca23ca;
+  box-shadow: 0 0 10px #ca23ca;
+}

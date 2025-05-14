@@ -1,4 +1,3 @@
-/* Reset / base styles */
 * {
   margin: 0;
   padding: 0;
@@ -18,12 +17,11 @@ body {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-
   position: relative;
 }
 
 body::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -31,6 +29,10 @@ body::before {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7); /* Dark overlay */
   z-index: -1;
+}
+
+.hidden {
+  display: none !important;
 }
 
 /* Header styles */
@@ -45,6 +47,7 @@ header {
   backdrop-filter: blur(6px);
   z-index: 10;
 }
+
 .header-title {
   position: absolute;
   left: 50%;
@@ -71,19 +74,6 @@ header {
   gap: 1rem;
 }
 
-/* Logo */
-.logo {
-  height: 50px;
-  width: auto;
-  border-radius: 15%;
-  box-shadow: 0 0 8px #ca23ca, 0 0 16px #ca23ca;
-  transition: transform 0.3s ease;
-}
-
-.logo:hover {
-  transform: rotate(3deg) scale(1.05);
-}
-
 /* Main layout */
 main {
   width: 90%;
@@ -107,6 +97,19 @@ main {
   flex-shrink: 0;
   border: 2px solid #ca23ca;
   box-shadow: 0 0 10px #ca23ca;
+}
+
+/* Logo */
+.logo {
+  height: 50px;
+  width: auto;
+  border-radius: 15%;
+  box-shadow: 0 0 8px #ca23ca, 0 0 16px #ca23ca;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: rotate(3deg) scale(1.05);
 }
 
 /* Style already added previously, just refining */
@@ -153,7 +156,7 @@ main {
   display: flex;
   width: 100%;
   gap: 0.5rem;
-  background-color: rgb(#404040, 0.3);
+  background-color: rgba(64, 64, 64, 0.3);
   border: 2px solid #ca23ca; /* Neon green border */
   box-shadow: 0 0 5px #ca23ca, 0 0 10px #ca23ca, 0 0 15px #ca23ca;
   color: #fff;
@@ -200,42 +203,6 @@ main {
   padding: 1rem;
 }
 
-/* Overlay for spinner */
-#spinner-box {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.spinner {
-  width: 60px;
-  height: 60px;
-  border: 6px solid rgba(255, 0, 255, 0.2); /* subtle outer ring */
-  border-top: 6px solid #ff00ff; /* bright neon pink */
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  box-shadow:
-    0 0 10px #ff00ff,
-    0 0 20px #ff00ff,
-    0 0 40px #ff00ff;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.hidden {
-  display: none !important;
-}
-
 .input-wrapper {
   position: relative;
   width: 100%;
@@ -260,6 +227,35 @@ main {
   user-select: none;
 }
 
+/* SPINNER */
+#spinner-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(255, 0, 255, 0.2); /* subtle outer ring */
+  border-top: 6px solid #ff00ff; /* bright neon pink */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* POPUP */
 .popup {
   position: fixed;
   top: 1.5rem;
@@ -284,13 +280,43 @@ main {
 }
 
 @keyframes shake {
-  0% { transform: translateX(-50%) translateY(0); }
-  25% { transform: translateX(-48%) translateY(0); }
-  50% { transform: translateX(-52%) translateY(0); }
-  75% { transform: translateX(-48%) translateY(0); }
-  100% { transform: translateX(-50%) translateY(0); }
+  0% {
+    transform: translateX(-50%) translateY(0);
+  }
+  25% {
+    transform: translateX(-48%) translateY(0);
+  }
+  50% {
+    transform: translateX(-52%) translateY(0);
+  }
+  75% {
+    transform: translateX(-48%) translateY(0);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
 }
-
 .popup.shake {
   animation: shake 0.4s ease;
 }
+
+/* SIDEBAR */
+.help-sidebar {
+  position: fixed;
+  top: 5rem;
+  right: 0;
+  width: 280px;
+  height: calc(100% - 5rem);
+  background: rgba(51, 28, 66, 0.95);
+  color: #fff;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.2s ease-in-out;
+  z-index: 9;
+}
+
+.help-sidebar.open {
+  transform: translateX(0);
+}
+
+/*# sourceMappingURL=style.css.map */

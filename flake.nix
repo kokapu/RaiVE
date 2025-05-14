@@ -33,6 +33,9 @@
             export CARGO_TARGET_DIR="$(git rev-parse --show-toplevel)/target_dirs/nix_rustc";
           '';
           nativeBuildInputs = with pkgs; [
+            nodePackages.live-server
+            nodePackages.npm
+            nodePackages.sass
             pkg-config
             rustToolchain
             wasm-bindgen-cli

@@ -8,6 +8,7 @@ default:
 [doc('Build')]
 build:
     wasm-pack build --target web
+    sass pkg/styles/main.scss pkg/style.css
     rm pkg/.gitignore
 
 [doc('Linting')]

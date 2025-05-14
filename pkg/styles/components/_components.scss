@@ -1,0 +1,131 @@
+/* Logo */
+.logo {
+  height: 50px;
+  width: auto;
+  border-radius: 15%;
+  box-shadow: 0 0 8px #ca23ca, 0 0 16px #ca23ca;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: rotate(3deg) scale(1.05);
+}
+
+/* Style already added previously, just refining */
+.controls-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+  background-color: rgba(64, 64, 64, 0.4);
+  border: 2px solid #ca23ca;
+  box-shadow: 0 0 8px #ca23ca, 0 0 16px #ca23ca;
+  height: 100px; /* match canvas height */
+  width: 90px;
+}
+
+.control-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  text-shadow: 0 0 5px #ca23ca, 0 0 10px #ca23ca;
+  transition: transform 0.2s ease;
+}
+
+.control-button:hover {
+  transform: scale(1.2);
+}
+
+/* Chat history */
+.chat-history {
+  width: 100%;
+  height: 300px;
+  background-color: rgba(64, 64, 64, 0.3);
+  overflow-y: auto;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+}
+
+/* Prompt area */
+.input-prompt {
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+  background-color: rgb(#404040, 0.3);
+  border: 2px solid #ca23ca; /* Neon green border */
+  box-shadow: 0 0 5px #ca23ca, 0 0 10px #ca23ca, 0 0 15px #ca23ca;
+  color: #fff;
+  margin-top: 2rem;
+  margin-bottom: 4rem;
+  align-items: center;
+  position: relative;
+  justify-content: center;
+}
+
+.input-prompt input {
+  flex: 1;
+  padding: 0.5rem;
+  background-color: #404040;
+  /* color: #fff; */
+}
+
+.input-prompt input.text-entered {
+  background-color: #3a3a3a;
+  color: #a9a9a9;
+}
+
+.input-prompt input:not(:placeholder-shown) {
+  background-color: #404040;
+  color: #a9a9a9; /* lighter gray text color */
+}
+
+.editor-container {
+  background-color: rgba(128, 128, 128, 0.5); /* Transparent grey */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* padding: 1rem; */
+  background-color: rgba(200, 200, 200, 0.3);
+  border: 2px solid #ca23ca; /* Neon green border */
+  box-shadow: 0 0 5px #ca23ca, 0 0 10px #ca23ca, 0 0 15px #ca23ca;
+}
+
+.cm-editor {
+  background-color: rgba(128, 128, 128, 0.5);
+  width: 600px;
+  height: 500px;
+  padding: 1rem;
+}
+
+
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  background-color: #3a3a3a;
+  color: #a9a9a9;
+}
+
+.input-wrapper input {
+  width: 100%;
+  background-color: #3a3a3a;
+  color: #a9a9a9;
+}
+
+.char-counter {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: #a9a9a9;
+  pointer-events: none;
+  user-select: none;
+}
+
+

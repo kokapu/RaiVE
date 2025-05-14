@@ -51,7 +51,7 @@ function attachDrawHookOnce(repl) {
 // =======================================
 function showPopup(message, timeout = 4000) {
   const popup = document.getElementById('popup');
-  popup.textContent = message;
+  popup.innerHTML = message;
   popup.classList.remove('hidden');
   popup.classList.add('show', 'shake');
   setTimeout(() => popup.classList.remove('shake'), 500);
@@ -85,18 +85,24 @@ function setupControls() {
     });
   }
 
-  // Help button styling + handler
-  const helpBtn = document.getElementById('helpButton');
-  if (helpBtn) {
+  const helpBtn    = document.getElementById('helpButton');
+  const helpPanel  = document.getElementById('helpSidebar');
+  const closeHelp  = document.getElementById('closeHelpBtn');
+
+  if (helpBtn && helpPanel) {
     helpBtn.classList.add('control-button');
     helpBtn.innerHTML = '❓';
     helpBtn.title     = 'Help';
+
     helpBtn.addEventListener('click', () => {
-      showPopup(
-        '▶️ Run (model). ⏸️ Pause. 🗑️ Clear code. ’?’ shows this tip. ' +
-        'If model is rate-limited, edit manually!',
-        8000
-      );
+      helpPanel.classList.toggle('open');
+    });
+  }
+
+  // Close-panel button
+  if (closeHelp && helpPanel) {
+    closeHelp.addEventListener('click', () => {
+      helpPanel.classList.remove('open');
     });
   }
 
