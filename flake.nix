@@ -33,13 +33,18 @@
             export CARGO_TARGET_DIR="$(git rev-parse --show-toplevel)/target_dirs/nix_rustc";
           '';
           nativeBuildInputs = with pkgs; [
+            # Front-end
             nodePackages.live-server
             nodePackages.npm
             nodePackages.sass
-            pkg-config
+
+            # WASM
             rustToolchain
             wasm-bindgen-cli
             wasm-pack
+
+            # Build / Lint utilities
+            pkg-config
             just
             nil
             nixfmt-rfc-style

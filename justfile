@@ -18,4 +18,4 @@ lint:
 
 [doc('Run')]
 run: build
-  python3 -m http.server 8080 -d pkg
+    live-server pkg
