@@ -10,8 +10,8 @@
 
     <!-- Vercel analytics -->
     <script>
-      window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
     <script defer src="/_vercel/insights/script.js"></script>
@@ -63,14 +63,37 @@
     <div id="popup" class="popup hidden"></div>
     <div id="helpSidebar" class="help-sidebar">
       <button id="closeHelpBtn" class="close-btn">×</button>
-      <h2>How to use rAIVE</h2>
-      <p>▶️ Run (model). ⏸️ Pause. 🗑️ Clear code.</p>
-      <p>If model is rate-limited, edit manually!</p>
-      <p>
-        📖 <a href="https://strudel.cc/workshop/getting-started/" target="_blank">
-          Getting Started Docs
+      <h2 class="help-title">🧠 How to use rAIVE</h2>
+
+      <div class="help-section">
+        <h3>🎬 Basic Controls</h3>
+        <ul>
+          <li><strong>▶️ Run</strong>: Start the model</li>
+          <li><strong>⏸️ Pause</strong>: Stop generation</li>
+          <li><strong>🗑️ Clear</strong>: Reset current code</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <h3>✍️ Prompt Examples</h3>
+        <ul>
+          <li>“Add a sine wave to the oscillator”</li>
+          <li>“Make the filter cutoff follow a saw LFO”</li>
+          <li>“Reverse the playback after 4 bars”</li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <h3>🚨 Rate Limit Tips</h3>
+        <p>If the model is slow or rate-limited, try editing manually or simplifying your prompt.</p>
+      </div>
+
+      <div class="help-section">
+        <h3>📚 More Help</h3>
+        <a href="https://strudel.cc/workshop/getting-started/" target="_blank">
+          Getting Started Docs ↗
         </a>
-      </p>
+      </div>
     </div>
   </body>
 </html>
