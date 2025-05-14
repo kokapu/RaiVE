@@ -14,5 +14,6 @@ wasm-bindgen = "0.2.100"
 wasm-bindgen-futures = "0.4.50"
 console_error_panic_hook = "0.1.7"
 once_cell = "1.21.3"
+dotenvy = "0.15.7"
 
 

@@ -1,33 +1,37 @@
 use gemini_rust::Gemini;
+use std::env;
 
 use crate::model::Model;
-
-const NUM_API_KEYS: usize = 2;
-const API_KEYS: [&str; NUM_API_KEYS] = [
-    "AIzaSyD1o715Q2sm8we7o_3AHt6TIrs8Wg571yU",
-    "AIzaSyA0VpcGCGprYaF0ilGZo4tSt7RP1THihR0",
-];
 
 static INITIAL_PROMPT: &str = include_str!("prompts/initial.txt");
 static FOLLOWUP_PROMPT: &str = include_str!("prompts/followup.txt");
 
 pub struct GeminiClient {
     model: Gemini,
+    api_keys: Vec<String>,
     cur_api_key: usize,
     prompt: String,
 }
 
 impl GeminiClient {
     fn update_api_key(&mut self) {
-        self.model = Gemini::new(API_KEYS[self.cur_api_key]);
-        self.cur_api_key = (self.cur_api_key + 1) % NUM_API_KEYS;
+        self.model = Gemini::new(&self.api_keys[self.cur_api_key]);
+        self.cur_api_key = (self.cur_api_key + 1) % self.api_keys.len();
     }
 }
 
 impl Model for GeminiClient {
     fn new() -> Self {
+        dotenvy::dotenv().ok();
+        let api_keys: Vec<String> = env::var("GEMINI_API_KEYS")
+            .expect("GEMINI_API_KEYS not set")
+            .split(',')
+            .map(|s| s.trim().to_string())
+            .collect();
+
         GeminiClient {
-            model: Gemini::new(API_KEYS[0]),
+            model: Gemini::new(&api_keys[0]),
+            api_keys,
             cur_api_key: 1,
             prompt: "".into(),
         }
@@ -49,7 +53,7 @@ impl Model for GeminiClient {
     /// Try each API key in turn. On a non-empty reply, return it immediately;
     /// otherwise rotate to the next key. If all keys fail, return an empty string.
     async fn query(&mut self) -> String {
-        for _ in 0..NUM_API_KEYS {
+        for _ in 0..self.api_keys.len() {
             if let Ok(response) = self
                 .model
                 .generate_content()
