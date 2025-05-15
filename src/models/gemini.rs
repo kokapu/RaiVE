@@ -1,5 +1,6 @@
 use gemini_rust::Gemini;
-use std::env;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen_futures::js_sys::JsString;
 
 use crate::model::Model;
 
@@ -20,14 +21,23 @@ impl GeminiClient {
     }
 }
 
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(thread_local_v2, js_name = GEMINI_API_KEYS)]
+    static GEMINI_API_KEYS: JsString;
+}
+
+fn get_api_keys() -> Vec<String> {
+    let raw = GEMINI_API_KEYS
+        .with(JsString::clone)
+        .as_string()
+        .expect("GEMINI_API_KEYS must be a string");
+    raw.split(',').map(|s| s.trim().to_string()).collect()
+}
+
 impl Model for GeminiClient {
     fn new() -> Self {
-        dotenvy::dotenv().ok();
-        let api_keys: Vec<String> = env::var("GEMINI_API_KEYS")
-            .expect("GEMINI_API_KEYS not set")
-            .split(',')
-            .map(|s| s.trim().to_string())
-            .collect();
+        let api_keys: Vec<String> = get_api_keys();
 
         GeminiClient {
             model: Gemini::new(&api_keys[0]),

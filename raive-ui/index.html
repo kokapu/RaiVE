@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RaiVE</title>
     <link rel="icon" href="images/RaiVEIcon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="src/style.css">
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.min.js"></script>
 
     <!-- Vercel analytics -->
@@ -21,7 +21,7 @@
     <header>
       <div class="header-left">
         <a href="https://github.com/kokapu/RaiVE">
-          <img class="logo" src="images/RaiVELogo.webp" alt="rAIve Logo">
+          <img class="logo" src="RaiVELogo.webp" alt="rAIve Logo">
         </a>
       </div>
       <div class="header-title">RaiVE</div>
@@ -58,8 +58,9 @@
       </div>
     </main>
 
-    <script src="main.js"></script>
-    <script type="module" src="wasm-bridge.js"></script>
+    <script type="module" src="src/main.js"></script>
+    <script src="visualization.js"></script>
+    <script type="module" src="src/pkg/wasm-bridge.js"></script>
     <div id="popup" class="popup hidden"></div>
     <div id="helpSidebar" class="help-sidebar">
       <button id="closeHelpBtn" class="close-btn">×</button>

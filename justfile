@@ -7,9 +7,9 @@ default:
 
 [doc('Build')]
 build:
-    wasm-pack build --target web
-    sass pkg/styles/main.scss pkg/style.css
-    rm pkg/.gitignore
+    wasm-pack build --target web --out-dir raive-ui/src/pkg
+    sass raive-ui/src/styles/main.scss raive-ui/src/style.css
+    rm raive-ui/src/pkg/.gitignore
 
 [doc('Linting')]
 lint:
@@ -18,4 +18,4 @@ lint:
 
 [doc('Run')]
 run: build
-    live-server pkg
+    npm run dev --prefix raive-ui
