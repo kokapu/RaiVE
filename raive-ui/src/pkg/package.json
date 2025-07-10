@@ -1,0 +1,15 @@
+{
+  "name": "raive",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "raive_bg.wasm",
+    "raive.js",
+    "raive.d.ts"
+  ],
+  "main": "raive.js",
+  "types": "raive.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

@@ -1,0 +1,9 @@
+target
+target_dirs
+
+.direnv
+.env
+
+result
+
+

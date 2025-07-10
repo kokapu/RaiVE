@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-adsense-account" content="ca-pub-1452886364073954">
+
+    <title>RaiVE – AI Music Prompt to Sound</title>
+    <meta name="description" content="RaiVE lets you generate electronic music with a simple text prompt. Discover new beats and melodies using AI." />
+
+    <link rel="icon" href="RaiVEIcon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="src/style.css">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://raive.space/" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="RaiVE – AI Music Prompt to Sound" />
+    <meta property="og:description" content="Generate electronic music with a prompt. Explore new beats and melodies instantly." />
+    <meta property="og:image" content="https://raive.space/RaiVELogo.webp" />
+    <meta property="og:url" content="https://raive.space/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="RaiVE – AI Music Prompt to Sound" />
+    <meta name="twitter:description" content="Generate electronic music with a prompt. Explore new beats and melodies instantly." />
+    <meta name="twitter:image" content="https://raive.space/RaiVELogo.webp" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "RaiVE",
+    "url": "https://raive.space",
+    "description": "RaiVE is an AI tool that generates electronic music from text prompts.",
+    "applicationCategory": "MusicApplication",
+    "operatingSystem": "All",
+    "creator": {
+    "@type": "Organization",
+    "name": "RaiVE"
+    }
+    }
+    </script>
+
+    <!-- Vercel Analytics -->
+    <script>
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.min.js"></script>
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header>
+      <div class="header-left">
+        <button id="aboutButton">About</button>
+      </div>
+      <div class="header-title">RaiVE</div>
+      <div class="header-right">
+        <button id="helpButton">Help</button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="vis-wrapper">
+        <div id="vis-container"></div>
+        <div class="controls-container">
+          <button id="playButton" class="control-button">▶</button>
+          <button id="pauseButton" class="control-button">⏸</button>
+        </div>
+      </div>
+      <script src="strudel/index.js"></script>
+      <div class="editor-container">
+        <div class="editor-buttons">
+          <button id="undoButton" title="Undo">↩️</button>
+          <button id="redoButton" title="Redo">↪️</button>
+          <button id="clearButton" title="Clear" type="button">❌</button>
+        </div>
+        <strudel-editor id="repl"></strudel-editor>
+      </div>
+
+      <!-- Prompt / Input Area -->
+      <section class="prompt-section">
+        <form class="input-prompt" autocomplete="off" onsubmit="handleInput(event)">
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="input"
+              placeholder="what's the sound in your mind?"
+              maxlength="100"
+              required
+            />
+            <span class="char-counter" id="counter">0/100</span>
+          </div>
+          <button id="sendButton" type="submit">→</button>
+        </form>
+      </section>
+
+      <!-- Sample prompt buttons -->
+      <div class="sample-prompts">
+        <button type="button" class="sample-btn" onclick="fillSample('play a four to the floor beat')">🎧 Simple beat</button>
+        <button type="button" class="sample-btn" onclick="fillSample('make a dark saw-tooth melody')">🌌 Dark Ambient</button>
+      </div>
+
+      <div id="support-raive-container">
+        <button id="supportButton" onclick="window.open('https://donate.stripe.com/14A4gA85Z0Kq9tf3FZ4F200', '_blank')">💖 Support Raive!</button>
+      </div>
+
+      <div class="spinner-box hidden" id="spinner-box">
+        <div class="spinner"></div>
+      </div>
+    </main>
+
+    <script type="module" src="src/main.js"></script>
+    <script tupe="module" src="visualization.js"></script>
+    <script type="module" src="src/pkg/wasm-bridge.js"></script>
+    <div id="popup" class="popup hidden"></div>
+    <div id="helpSidebar" class="help-sidebar open">
+      <button id="closeHelpBtn" class="close-btn">×</button>
+      <h2 class="help-title">How to use RaiVE</h2>
+
+      <div class="help-section">
+        <h3>Basic Controls</h3>
+        <p>RaiVE is a tool to generate simple electronic music by converting your musical ideas into playable code. Type a prompt in the input box and press Enter to generate music. See prompt examples below for ideas!</p>
+        <br>
+        <p>To build your musical piece, you can either directly edit the code or type another prompt to append to the existing code.</p>
+        <br>
+        <p>Use the buttons below to control the music:</p>
+        <br>
+        <ul>
+          <li><strong>▶️ Run</strong>: Play music from the current code</li>
+          <li><strong>⏸️ Pause</strong>: Stop music</li>
+          <li><strong>❌ Clear</strong>: Clear current code and reset model </li>
+        </ul>
+      </div>
+
+      <div class="help-section">
+        <h3>Serious Prompt Examples</h3>
+        <ul>
+          <li>“Add a saw-tooth melody”</li>
+          <li>“Add high hats every 4 bars”</li>
+          <li> "Add a melody with arpy" </li>
+          <li> "Add a bass line" </li>
+        </ul>
+        <a href="#sample-table-anchor" onclick="showSampleTable()">Available sounds here</a>
+      </div>
+
+      <div class="help-section">
+        <h3>Fun Prompt Examples</h3>
+        <ul>
+          <li>"Create a cool beat"</li>
+          <li>“Create a forest techno beat”</li>
+          <li>“Add some animal sounds”</li>
+          <li>“Create rain sounds”</li>
+        </ul>
+        <a href="#sample-table-anchor" onclick="showSampleTable()">Available sounds here</a>
+      </div>
+
+      <div class="help-section">
+        <h3>Caution</h3>
+        <p>The model might be slow if we are experiencing heavy traffic - try editing the code manually or simplifying your prompt.</p>
+      </div>
+
+      <div class="help-section">
+        <h3>More Help</h3>
+        <a href="https://strudel.cc/workshop/getting-started/" target="_blank">
+          Getting Started Docs for Strudel code ↗
+        </a>
+      </div>
+      
+      <div class="help-section">
+        <h3>Sounds Available
+          <button id="toggle-sound-list" class="toggle-button">show</button>
+        </h3>
+        <div id="sound-list" style="display: none;">   
+          <div id="sample-table-anchor"> </div>
+          <div class="sample-table-wrapper">
+            <h2 class="sample-title">Dirt Sample Categories</h2>
+            <table class="sample-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Sample Names</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Kicks</td>
+                  <td>808bd, bd, clubkick, hardkick, popkick, kicklinn, reverbkick</td>
+                </tr>
+                <tr>
+                  <td>Snares & Claps</td>
+                  <td>sn, cp, sd, realclaps, cr, clap, drumtraks</td>
+                </tr>
+                <tr>
+                  <td>Hi-Hats & Cymbals</td>
+                  <td>hh, 808hc, 808oh, hc, hho, hh27, cymbals</td>
+                </tr>
+                <tr>
+                  <td>Percussion</td>
+                  <td>tabla, tabla2, can, cb, perc, bongo, conga, rim, clak, tink</td>
+                </tr>
+                <tr>
+                  <td>Breaks & Loops</td>
+                  <td>breaks125, breaks152, breaks157, breaks165, amen, amencutup</td>
+                </tr>
+                <tr>
+                  <td>Bass</td>
+                  <td>bass, bass0, bass1, bass2, bass3, jvbass, bassdm, bassfoo</td>
+                </tr>
+                <tr>
+                  <td>Melodic & Synth</td>
+                  <td>arp, arpy, fm, moog, juno, keys, feel, feelFx, led</td>
+                </tr>
+                <tr>
+                  <td>Glitch & FX</td>
+                  <td>glitch, glitch2, flick, noise, hiss, zap, dorkbot, cosmicg</td>
+                </tr>
+                <tr>
+                  <td>Chiptune / Retro</td>
+                  <td>sid, blip, bleep, speakspell, dr55, casio</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      <div class="help-section">
+        <h3>Source/License</h3>
+        This project is open-source (AGPLv3).
+        <a href="https://github.com/kokapu/RaiVE" target="_blank" rel="noopener">
+          View source on GitHub
+        </a>.
+        <br>
+        This service uses a modified version of <strong>Strudel</strong>.
+        <br>
+        <a href="https://github.com/kokapu/strudel" target="_blank" rel="noopener">
+          View source on GitHub
+        </a>.
+        <br>
+        <a href="https://opencollective.com/tidalcycles" target="_blank" rel="noopener">
+          Support it here
+        </a>.
+      </div>
+      </div>
+    </div>
+
+    <div id="aboutSidebar" class="about-sidebar">
+      <button id="closeAboutBtn" class="close-btn">×</button>
+      <h2 class="about-title">About RaiVE</h2>
+      <div class="about-section">
+        <h3> What is this?</h3>
+        <p> RaiVE is a tool meant to make the creation of electronic music more accessible. We had a lot of fun making it, and we hope you have fun using it! We are constantly trying to make RaiVE better, so please reach out to us if you have any suggestions! </p>
+        <br>
+        <br>
+        <h3>Suggestions? Say hi?</h3>
+        <p>Email us at raive.space [at] gmail.com </p>
+        <br>
+        <br>
+        <h3> Meet the RaiVE team </h3>
+        <br>
+        <div class="team-grid">
+          <a href="https://jachymp.me/" target="_blank" class="team-member-link">
+            <div class="team-member">
+              <img src="jachym.webp" alt="Jachym" class="team-photo" />
+              <br>
+              <span class="team-name">Jachym</span>
+            </div>
+          </a>
+          <a href="https://bhavya-kasera.github.io/" target="_blank" class="team-member-link">
+            <div class="team-member">
+              <img src="bhavya.webp" alt="Bhavya" class="team-photo" />
+              <br>
+              <span class="team-name">Bhavya</span>
+            </div>
+          </a>
+          <a href="https://github.com/SamKouteili/" target="_blank" class="team-member-link">
+            <div class="team-member">
+              <img src="sam.webp" alt="Sam" class="team-photo" />
+              <br>
+              <span class="team-name">Sam</span>
+            </div>
+          </a>
+      </div>
+    </div>
+  </body>
+</html>

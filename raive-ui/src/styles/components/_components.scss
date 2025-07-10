@@ -1,0 +1,293 @@
+/* Logo */
+.logo {
+  height: 50px;
+  width: auto;
+  border-radius: 15%;
+  box-shadow: 0 0 8px #ca23ca, 0 0 16px #ca23ca;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: rotate(3deg) scale(1.05);
+}
+
+/* Style already added previously, just refining */
+.controls-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 12px;
+  height: 100%;
+  background-color: rgba(64, 64, 64, 0.4);
+  border: 2px solid #ca23ca;
+  box-shadow: 0 0 8px #ca23ca, 0 0 16px #ca23ca;
+}
+
+.control-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  text-shadow: 0 0 5px #ca23ca, 0 0 10px #ca23ca;
+  transition: transform 0.2s ease;
+}
+
+.control-button:hover {
+  transform: scale(1.2);
+}
+
+
+/* Prompt area */
+.prompt-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 4rem;
+  width: 100%;
+}
+
+.input-prompt {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  gap: 1rem;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border: 2px solid transparent;
+}
+
+.input-prompt input {
+  flex: 1;
+  padding: 0.5rem;
+  background-color: #404040;
+}
+
+.input-prompt input.text-entered {
+  background-color: #3a3a3a;
+  color: #a9a9a9;
+}
+
+.input-prompt input:not(:placeholder-shown) {
+  background-color: #404040;
+  color: #a9a9a9;
+}
+
+.input-prompt input::placeholder {
+  color: #ccc;
+  opacity: 0.8; /* Ensure it's not too transparent */
+}
+
+.sample-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: -2rem;
+  margin-bottom: 2rem;
+}
+
+.sample-btn {
+  background-color: #1a1a1a;
+  color: #fff;
+  border: 2px solid #ca23ca;
+  box-shadow: 0 0 6px #ca23ca, 0 0 12px #ca23ca;
+  padding: 0.4rem 1rem;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.sample-btn:hover {
+  background-color: #2a2a2a;
+  transform: scale(1.05);
+}
+
+.sample-btn:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 480px) {
+  .sample-btn {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+  }
+}
+
+.editor-container {
+  background-color: rgba(128, 128, 128, 0.5);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(200, 200, 200, 0.3);
+  border: 2px solid #ca23ca; /* Neon green border */
+  box-shadow: 0 0 5px #ca23ca, 0 0 10px #ca23ca, 0 0 15px #ca23ca;
+  border-radius: 5px;
+}
+
+.cm-editor {
+  background-color: rgba(128, 128, 128, 0.5);
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+.input-wrapper {
+  position: relative;
+  flex: 1;
+  background-color: #3a3a3a;
+  color: #a9a9a9;
+  border: 2px solid #ca23ca;
+  border-radius: 20px;
+  box-shadow: 0 0 5px #ca23ca, 0 0 10px #ca23ca, 0 0 15px #ca23ca;
+  padding: 4px 12px;
+}
+
+.input-wrapper input {
+  width: 100%;
+  background-color: #3a3a3a;
+  color: #a9a9a9;
+  border: none;
+  font-size: 1rem;
+  border-radius: 20px;
+  outline: none;
+  padding-right: 4rem; /* space for the counter */
+}
+
+.char-counter {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: #a9a9a9;
+  pointer-events: none;
+  user-select: none;
+}
+
+#clearButton {
+  all: unset;
+  background-color: rgba(64, 64, 64, 0.8);
+  color: white;
+  border: 1px solid #ca23ca;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 0 4px #ca23ca;
+  transition: transform 0.2s ease;
+}
+
+#clearButton:hover {
+  transform: scale(1.1);
+  background-color: rgba(80, 80, 80, 0.9);
+}
+
+.input-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#sendButton {
+  padding: 8px 16px;
+  font-size: 1rem;
+  color: white;
+  background-color: #1a1a1a;
+  border: 2px solid #ca23ca;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 5px #ca23ca, 0 0 10px #ca23ca;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+#sendButton:hover {
+  background-color: #2a2a2a;
+  transform: scale(1.05);
+}
+
+#support-raive-container {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+#supportButton {
+  background-color: #1a1a1a;
+  color: white;
+  border: 2px solid #ca23ca;
+  box-shadow: 0 0 6px #ca23ca, 0 0 12px #ca23ca;
+  padding: 0.5rem 1.25rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+#supportButton:hover {
+  background-color: #2a2a2a;
+  transform: scale(1.05);
+}
+
+#supportButton:active {
+  transform: scale(0.98);
+}
+
+.editor-container {
+  position: relative;
+}
+
+/* Container for undo/redo buttons */
+.editor-buttons {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+/* Style individual buttons */
+.editor-buttons button {
+  background-color: rgba(64, 64, 64, 0.8);
+  color: white;
+  border: 1px solid #ca23ca;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 0 4px #ca23ca;
+  transition: transform 0.2s ease;
+}
+
+.editor-buttons button:hover {
+  transform: scale(1.1);
+  background-color: rgba(80, 80, 80, 0.9);
+}
+
+.toggle-button {
+  padding: 2px 4px;
+  position: fixed;
+  background-color: transparent;
+  color: #ffaaff;
+  font-size: 10px;
+  font-family: "Gill Sans", sans-serif;
+  border-radius: 4px;
+  border: 1px solid #ca23ca; /* Neon green border */
+  border-radius: 10px;
+  box-shadow: 0 0 3px #ca23ca, 0 0 6px #ca23ca, 0 0 12px #ca23ca;
+  cursor: pointer;
+  z-index: 1000;
+  margin-left: 8px;
+}
+
