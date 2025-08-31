@@ -258,17 +258,18 @@ dependencies = [
 
 [[package]]
 name = "gemini-rust"
-version = "0.4.2"
-source = "git+https://github.com/JachymPutta/gemini-rust.git#e692fb9846921a89d359881e90b400c3f8aa5d93"
+version = "1.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6ce32291b977392ac3c377951eb1b3141055f4ac31f4203ce8bcfd93aa35ba46"
 dependencies = [
  "async-trait",
+ "base64",
  "futures",
  "futures-util",
  "reqwest",
  "serde",
  "serde_json",
  "thiserror",
- "tokio",
  "url",
 ]
 
